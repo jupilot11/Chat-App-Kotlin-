@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Chat App(KOTLIN)</string>
+    <string name="value_error">Value is incorrect</string>
+    <string name="underline_signup"><u>Sign up</u></string>
+    <string name="underline_login"><u>Login</u></string>
+    <string name="sign_up">Sign up</string>
+    <string name="sign_in">Sign in</string>
+
+    <string name="signin_msg">By signing up, you agree to the Terms of Service and Privacy Policy, including Cookie User. Others will be able to find you by searching for your email address or phone number when provided.</string>
+
+</resources>
