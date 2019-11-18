@@ -1,15 +1,12 @@
 package com.example.chatappkotlin
 
 import android.os.Handler
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 
 class FirebaseMethods {
 
     var valueEventListener1 : ValueEventListener? = null
-    val valueEventListener : ValueEventListener? = null
+    var valueEventListener2 : ValueEventListener? = null
 
     internal val gotResult = BooleanArray(1)
 
@@ -77,7 +74,7 @@ class FirebaseMethods {
     private fun checkConnectionTimeout(connectionTimeoutCallback: ConnectionTimeoutCallback) {
         val progressRunnable = {
 
-            if (gotResult[0] == false) { //  Timeout
+            if (!gotResult[0]) { //  Timeout
 
                 connectionTimeoutCallback.onConnectionTimeOut()
 
@@ -101,5 +98,86 @@ class FirebaseMethods {
         fun onUserExists()
 
         fun onConnectionTimeOut()
+    }
+
+
+    fun firebaseLogin(
+        databaseReference: DatabaseReference,
+        str_username: String,
+        str_password: String,
+        loginCallback: LoginCallback
+    ) {
+
+        valueEventListener2 = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                gotResult[0] = true
+                if (dataSnapshot.childrenCount != 0L) {
+
+                    isEqual = false
+                    for (dataSnapshot1 in dataSnapshot.children) {
+
+                        val username = dataSnapshot1.child("str_username").value.toString()
+
+                        if (username.equals(str_username, ignoreCase = true)) {
+
+                            isEqual = true
+
+                            user = dataSnapshot1.getValue(User::class.java)
+
+                            break
+                        }
+
+                    }
+
+                    if (isEqual) {
+
+                        if (user?.str_password.equals(str_password)) {
+                            loginCallback.onSuccess(user)
+                            valueEventListener2?.let { databaseReference.removeEventListener(it) }
+                        } else {
+
+                            loginCallback.onErrorPassword()
+                            valueEventListener2?.let { databaseReference.removeEventListener(it) }
+                        }
+                    } else {
+                        loginCallback.onFailure()
+                        valueEventListener2?.let { databaseReference.removeEventListener(it) }
+                    }
+
+
+                } else {
+
+                    loginCallback.onFailure()
+                    valueEventListener2?.let { databaseReference.removeEventListener(it) }
+
+                }
+
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+
+            }
+        }
+        databaseReference.addValueEventListener(valueEventListener2 as ValueEventListener)
+        checkConnectionTimeout(object : ConnectionTimeoutCallback {
+            override fun onConnectionTimeOut() {
+                loginCallback.onConnectionTimeOut()
+                databaseReference.removeEventListener(valueEventListener2 as ValueEventListener)
+            }
+        })
+    }
+
+
+
+
+    interface LoginCallback {
+        fun onSuccess(user: User?)
+
+        fun onFailure()
+
+        fun onConnectionTimeOut()
+
+        fun onErrorPassword()
+
     }
 }

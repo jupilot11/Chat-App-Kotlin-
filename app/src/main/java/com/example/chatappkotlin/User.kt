@@ -3,23 +3,36 @@ package com.example.chatappkotlin
 import android.os.Parcel
 import android.os.Parcelable
 
-class User(var str_username: String?, var str_password: String?, var str_userId: String?) : Parcelable{
+class User : Parcelable {
 
 
+    var str_username: String? = null
+    var str_password: String? = null
+    var str_userId: String? = null
 
 
-    constructor(parcel: Parcel) : this(
-        parcel.readString(),
-        parcel.readString(),
-        parcel.readString()
-    )
+    constructor(parcel: Parcel) : this() {
+        str_username = parcel.readString()
+        str_password = parcel.readString()
+        str_userId = parcel.readString()
+    }
 
-    override fun writeToParcel(dest: Parcel?, flags: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    constructor(str_username: String?, str_password: String?, str_userId: String?) {
+        this.str_username = str_username
+        this.str_password = str_password
+        this.str_userId = str_userId
+    }
+
+    constructor()
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(str_username)
+        parcel.writeString(str_password)
+        parcel.writeString(str_userId)
     }
 
     override fun describeContents(): Int {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return 0
     }
 
     companion object CREATOR : Parcelable.Creator<User> {

@@ -6,6 +6,33 @@ import com.example.chatappkotlin.User
 
 interface Contract {
 
+    interface LoginView {
+        fun onSuccess(user: User)
+
+        fun onEmpyFields(textViews: Array<TextView>, i: Int)
+
+
+        fun onFailure()
+
+        fun onConnectionTimed()
+
+        fun onIntentSignUp()
+
+        fun onPasswordError()
+
+    }
+
+    interface LoginContract {
+
+        fun onHandleSigIn(
+            editTexts: Array<EditText>,
+            textViews: Array<TextView>,
+            strusername: String,
+            strpassword : String
+        )
+
+        fun onHandleIntent()
+    }
 
     interface SignupActivityView {
 

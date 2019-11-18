@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.app.NavUtils
 import com.example.chatappkotlin.Contract
 import com.example.chatappkotlin.R
 import com.example.chatappkotlin.TextWatcherHelper
@@ -135,5 +136,8 @@ class SignupActivity : AppCompatActivity(), Contract.SignupActivityView, View.On
 
     }
 
-
+    override fun onBackPressed() {
+        NavUtils.navigateUpFromSameTask(this)
+        finish()
+    }
 }
