@@ -88,11 +88,6 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener, Contract.Login
 
 
 
-    override fun onBackPressed() {
-        NavUtils.navigateUpFromSameTask(this)
-        finish()
-    }
-
     override fun onSuccess(user: User) {
 
         Toast.makeText(this, "Success Login", Toast.LENGTH_SHORT).show()

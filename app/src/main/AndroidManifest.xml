@@ -11,15 +11,13 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".view.SignupActivity"
-            android:parentActivityName=".view.MainActivity"
+            android:parentActivityName=".view.SignInActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize|adjustPan" />
-        <activity
-            android:name=".view.SignInActivity"
-            android:parentActivityName=".view.MainActivity"
+
+        <activity android:name=".view.SignInActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden|adjustResize|adjustPan" />/>
-        <activity android:name=".view.MainActivity">
+            android:windowSoftInputMode="stateHidden|adjustResize|adjustPan" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

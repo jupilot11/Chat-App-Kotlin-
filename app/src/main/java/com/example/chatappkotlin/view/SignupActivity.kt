@@ -67,9 +67,8 @@ class SignupActivity : AppCompatActivity(), Contract.SignupActivityView, View.On
     }
 
     override fun onIntentSignIn() {
-
-        val intent = Intent(this@SignupActivity, SignInActivity::class.java)
-        startActivity(intent)
+        NavUtils.navigateUpFromSameTask(this)
+        finish()
     }
 
     override fun onPasswordError() {
