@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Chat App(KOTLIN)</string>
+    <string name="app_name">Instagam</string>
     <string name="value_error">Value is incorrect</string>
     <string name="underline_signup"><u>Sign up</u></string>
     <string name="underline_login"><u>Login</u></string>

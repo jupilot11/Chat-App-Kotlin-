@@ -1,9 +1,10 @@
-package com.example.chatappkotlin
+package com.example.chatappkotlin.util
 
 import android.content.Context
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import com.example.chatappkotlin.R
 
 class TextWatcherHelper : TextWatcher {
 

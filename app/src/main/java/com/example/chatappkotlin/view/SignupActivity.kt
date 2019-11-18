@@ -8,19 +8,23 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.NavUtils
-import com.example.chatappkotlin.Contract
 import com.example.chatappkotlin.R
-import com.example.chatappkotlin.TextWatcherHelper
+import com.example.chatappkotlin.util.TextWatcherHelper
 import com.example.chatappkotlin.User
 import com.example.chatappkotlin.presenter.SignupPresenter
+import com.example.chatappkotlin.util.Contract
+import com.example.chatappkotlin.util.DialogHelper
 import kotlinx.android.synthetic.main.activity_signup.*
 
 class SignupActivity : AppCompatActivity(), Contract.SignupActivityView, View.OnClickListener {
+
+
 
     private var signuPresenter: SignupPresenter? = null
 
     private var str_username = ""
     private var str_password = ""
+    private var dialogHelper : DialogHelper? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,10 +36,20 @@ class SignupActivity : AppCompatActivity(), Contract.SignupActivityView, View.On
         textWatcher()
 
         signuPresenter = SignupPresenter(this)
-
+        dialogHelper = DialogHelper()
 
     }
 
+
+    override fun onShowProgDialog() {
+
+        dialogHelper?.showProgressDialog(this, "Please wait", false)
+    }
+
+    override fun onDismissProgress() {
+
+        dialogHelper?.dismissProgressDialog()
+    }
 
     override fun onEmpyFields(textViews: Array<TextView>, i: Int) {
 

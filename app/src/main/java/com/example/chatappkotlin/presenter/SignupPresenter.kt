@@ -4,16 +4,16 @@ import android.widget.EditText
 import android.widget.TextView
 import com.example.chatappkotlin.User
 import com.example.chatappkotlin.model.SignupInteractor
-import com.example.chatappkotlin.Contract
+import com.example.chatappkotlin.util.Contract
 
 class SignupPresenter : Contract.SignUpActivityPresenter, SignupInteractor.SignupInterface {
 
 
-    private var signupActivityView : Contract.SignupActivityView? = null
-    private var signupInteractor : SignupInteractor? = null
+    private var signupActivityView: Contract.SignupActivityView? = null
+    private var signupInteractor: SignupInteractor? = null
     private var isEmpty = false
 
-    constructor( signupActivityViews : Contract.SignupActivityView?){
+    constructor(signupActivityViews: Contract.SignupActivityView?) {
 
         this.signupActivityView = signupActivityViews
         signupInteractor = SignupInteractor()
@@ -30,7 +30,7 @@ class SignupPresenter : Contract.SignUpActivityPresenter, SignupInteractor.Signu
         for (i in editTexts.indices) {
             val strings = editTexts[i]
 
-            if (strings.length() < 8) {
+            if (strings.text.length < 8) {
 
                 isEmpty = true
 
@@ -74,5 +74,18 @@ class SignupPresenter : Contract.SignUpActivityPresenter, SignupInteractor.Signu
     }
 
     override fun onPasswordError() {
+
+        signupActivityView?.onPasswordError()
     }
+
+
+    override fun onShowProgDialog() {
+
+        signupActivityView?.onShowProgDialog()
+    }
+
+    override fun onDismissProgress() {
+        signupActivityView?.onDismissProgress()
+    }
+
 }

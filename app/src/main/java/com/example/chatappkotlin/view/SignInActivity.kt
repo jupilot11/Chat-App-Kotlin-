@@ -8,25 +8,26 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.NavUtils
-import com.example.chatappkotlin.Contract
 import com.example.chatappkotlin.R
-import com.example.chatappkotlin.TextWatcherHelper
 import com.example.chatappkotlin.User
 import com.example.chatappkotlin.presenter.LoginPresenter
+import com.example.chatappkotlin.util.Contract
+import com.example.chatappkotlin.util.DialogHelper
+import com.example.chatappkotlin.util.TextWatcherHelper
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_login.btn_signup
 import kotlinx.android.synthetic.main.activity_login.et_password
 import kotlinx.android.synthetic.main.activity_login.et_username
 import kotlinx.android.synthetic.main.activity_login.tv_pass_error
 import kotlinx.android.synthetic.main.activity_login.tv_user_error
-import kotlinx.android.synthetic.main.activity_signup.*
 
 class SignInActivity : AppCompatActivity(), View.OnClickListener, Contract.LoginView {
-
 
     var str_usernmame = ""
     var str_password = ""
     var loginPresenter: LoginPresenter? = null
+
+    var dialogHelper : DialogHelper? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,6 +39,7 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener, Contract.Login
 
         textWatcher()
 
+        dialogHelper = DialogHelper()
         loginPresenter = LoginPresenter(this)
 
 
@@ -71,6 +73,20 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener, Contract.Login
         }
 
     }
+
+
+    override fun onDismissProgress() {
+
+        dialogHelper?.dismissProgressDialog()
+
+    }
+
+    override fun onShowProgDialog() {
+        dialogHelper?.showProgressDialog(this, "Please wait...", false)
+
+    }
+
+
 
     override fun onBackPressed() {
         NavUtils.navigateUpFromSameTask(this)

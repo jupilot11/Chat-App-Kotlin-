@@ -1,6 +1,6 @@
 package com.example.chatappkotlin.model
 
-import com.example.chatappkotlin.FirebaseMethods
+import com.example.chatappkotlin.util.FirebaseMethods
 import com.example.chatappkotlin.User
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
@@ -33,13 +33,20 @@ class SignupInteractor {
 
         fun onPasswordError()
 
+
+        fun onShowProgDialog()
+
+        fun onDismissProgress()
+
     }
 
     fun signUp(user: User, str_username: String, signupInterface: SignupInterface) {
 
+        signupInterface.onShowProgDialog()
         firebaseMethods?.firebaseRegistration(table_user!!, str_username, object : FirebaseMethods.RegistrationCallback{
             override fun onSuccess() {
 
+                signupInterface.onDismissProgress()
                 table_user!!.push().setValue(user).addOnCompleteListener { task ->
 
                     if (task.isSuccessful) {
@@ -51,12 +58,14 @@ class SignupInteractor {
             }
 
             override fun onUserExists() {
+                signupInterface.onDismissProgress()
 
                 signupInterface.onFailure()
             }
 
 
             override fun onConnectionTimeOut() {
+                signupInterface.onDismissProgress()
 
                 signupInterface.onConnectionTimed()
             }

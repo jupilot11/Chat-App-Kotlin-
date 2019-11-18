@@ -1,4 +1,4 @@
-package com.example.chatappkotlin
+package com.example.chatappkotlin.util
 
 import android.widget.EditText
 import android.widget.TextView
@@ -20,6 +20,9 @@ interface Contract {
 
         fun onPasswordError()
 
+        fun onShowProgDialog()
+
+        fun onDismissProgress()
     }
 
     interface LoginContract {
@@ -48,6 +51,10 @@ interface Contract {
 
         fun onPasswordError()
 
+
+        fun onShowProgDialog()
+
+        fun onDismissProgress()
     }
 
     interface SignUpActivityPresenter {

@@ -1,6 +1,7 @@
-package com.example.chatappkotlin
+package com.example.chatappkotlin.util
 
 import android.os.Handler
+import com.example.chatappkotlin.User
 import com.google.firebase.database.*
 
 class FirebaseMethods {
@@ -16,7 +17,7 @@ class FirebaseMethods {
     private var user: User? = null
 
 
-    fun  firebaseRegistration(databaseReference: DatabaseReference, str_username : String, registrationCallback: RegistrationCallback ){
+    fun  firebaseRegistration(databaseReference: DatabaseReference, str_username : String, registrationCallback: RegistrationCallback){
 
 
         valueEventListener1 = object : ValueEventListener {

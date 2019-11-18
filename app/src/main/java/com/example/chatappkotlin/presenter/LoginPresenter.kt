@@ -2,11 +2,12 @@ package com.example.chatappkotlin.presenter
 
 import android.widget.EditText
 import android.widget.TextView
-import com.example.chatappkotlin.Contract
+import com.example.chatappkotlin.util.Contract
 import com.example.chatappkotlin.User
 import com.example.chatappkotlin.model.LoginInteractor
 
 class LoginPresenter : Contract.LoginContract, LoginInteractor.LoginInterface {
+
 
 
     private var loginView: Contract.LoginView? = null
@@ -33,7 +34,7 @@ class LoginPresenter : Contract.LoginContract, LoginInteractor.LoginInterface {
 
             val strings = editTexts[i]
 
-            if (strings.length() < 8) {
+            if (strings.text.length < 8) {
 
                 isEmpty = true
 
@@ -89,5 +90,15 @@ class LoginPresenter : Contract.LoginContract, LoginInteractor.LoginInterface {
 
         loginView?.onPasswordError()
 
+    }
+
+    override fun onShowProgDialog() {
+
+        loginView?.onShowProgDialog()
+    }
+
+    override fun onDismissProgress() {
+
+        loginView?.onDismissProgress()
     }
 }
