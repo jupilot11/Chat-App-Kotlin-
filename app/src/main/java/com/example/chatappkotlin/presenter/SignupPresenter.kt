@@ -6,16 +6,14 @@ import com.example.chatappkotlin.User
 import com.example.chatappkotlin.model.SignupInteractor
 import com.example.chatappkotlin.util.Contract
 
-class SignupPresenter : Contract.SignUpActivityPresenter, SignupInteractor.SignupInterface {
+class SignupPresenter(signupActivityViews: Contract.SignupActivityView?) : Contract.SignUpActivityPresenter, SignupInteractor.SignupInterface {
 
 
-    private var signupActivityView: Contract.SignupActivityView? = null
+    private var signupActivityView: Contract.SignupActivityView? = signupActivityViews
     private var signupInteractor: SignupInteractor? = null
     private var isEmpty = false
 
-    constructor(signupActivityViews: Contract.SignupActivityView?) {
-
-        this.signupActivityView = signupActivityViews
+    init {
         signupInteractor = SignupInteractor()
     }
 
@@ -23,6 +21,7 @@ class SignupPresenter : Contract.SignUpActivityPresenter, SignupInteractor.Signu
         editTexts: Array<EditText>,
         textViews: Array<TextView>,
         strusername: String,
+        strpass : String,
         user: User
     ) {
         var ctr = 0
@@ -30,7 +29,7 @@ class SignupPresenter : Contract.SignUpActivityPresenter, SignupInteractor.Signu
         for (i in editTexts.indices) {
             val strings = editTexts[i]
 
-            if (strings.text.length < 8) {
+            if (strings.text.length < 6) {
 
                 isEmpty = true
 
@@ -45,7 +44,7 @@ class SignupPresenter : Contract.SignUpActivityPresenter, SignupInteractor.Signu
         }
         if (!isEmpty) {
 
-            signupInteractor?.signUp(user, strusername, this)
+            signupInteractor?.signUp(user,strpass, strusername ,this)
         }
     }
 
@@ -59,9 +58,9 @@ class SignupPresenter : Contract.SignUpActivityPresenter, SignupInteractor.Signu
         signupActivityView?.onSuccess(user)
     }
 
-    override fun onFailure() {
+    override fun onFailure(type : Int, strmessage : String) {
 
-        signupActivityView?.onFailure()
+        signupActivityView?.onFailure(type, strmessage)
     }
 
     override fun onConnectionTimed() {

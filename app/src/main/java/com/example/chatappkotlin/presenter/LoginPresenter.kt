@@ -34,7 +34,7 @@ class LoginPresenter : Contract.LoginContract, LoginInteractor.LoginInterface {
 
             val strings = editTexts[i]
 
-            if (strings.text.length < 8) {
+            if (strings.text.length < 6) {
 
                 isEmpty = true
 

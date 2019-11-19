@@ -2,6 +2,11 @@ package com.example.chatappkotlin.model
 
 import com.example.chatappkotlin.util.FirebaseMethods
 import com.example.chatappkotlin.User
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.AuthResult
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 
@@ -10,10 +15,12 @@ class SignupInteractor {
     private var firebaseMethods: FirebaseMethods? = null
     private var database: FirebaseDatabase? = null
     private var table_user: DatabaseReference? = null
+    private var firebaseAuth: FirebaseAuth? = null
 
 
+    constructor() {
 
-    constructor(){
+        firebaseAuth = FirebaseAuth.getInstance()
 
         database = FirebaseDatabase.getInstance()
         table_user = database!!.reference.child("User")
@@ -25,7 +32,7 @@ class SignupInteractor {
 
         fun onSuccess(user: User)
 
-        fun onFailure()
+        fun onFailure(type: Int, strmessage: String)
 
         fun onConnectionTimed()
 
@@ -40,36 +47,71 @@ class SignupInteractor {
 
     }
 
-    fun signUp(user: User, str_username: String, signupInterface: SignupInterface) {
-
+    fun signUp(
+        user: User,
+        strPassword: String,
+        str_username: String,
+        signupInterface: SignupInterface
+    ) {
         signupInterface.onShowProgDialog()
-        firebaseMethods?.firebaseRegistration(table_user!!, str_username, object : FirebaseMethods.RegistrationCallback{
-            override fun onSuccess() {
 
-                signupInterface.onDismissProgress()
-                table_user!!.push().setValue(user).addOnCompleteListener { task ->
+        firebaseAuth?.createUserWithEmailAndPassword(str_username, strPassword)
+            ?.addOnCompleteListener {
 
-                    if (task.isSuccessful) {
+                if (it.isSuccessful) {
+                    val firebaseUser = firebaseAuth?.currentUser
+                    val userId = firebaseUser?.uid
 
 
-                        signupInterface.onSuccess(user)
+                    if (it.exception is FirebaseAuthUserCollisionException) run {
+
+                        signupInterface.onDismissProgress()
+                        signupInterface.onFailure(2, "Email already Registered")
+
+                    } else {
+
+                        firebaseMethods?.firebaseRegistration(
+                            table_user!!,
+                            userId!!,
+                            object : FirebaseMethods.RegistrationCallback {
+                                override fun onSuccess() {
+
+                                    signupInterface.onDismissProgress()
+                                    table_user!!.push().setValue(user)
+                                        .addOnCompleteListener { task ->
+
+                                            if (task.isSuccessful) {
+
+
+                                                signupInterface.onSuccess(user)
+                                            }
+                                        }
+                                }
+
+                                override fun onUserExists() {
+                                    signupInterface.onDismissProgress()
+                                    signupInterface.onFailure(1, "User already exist")
+                                }
+
+
+                                override fun onConnectionTimeOut() {
+                                    signupInterface.onDismissProgress()
+
+                                    signupInterface.onConnectionTimed()
+                                }
+                            })
+
                     }
+                } else {
+
+                    signupInterface.onDismissProgress()
+                    signupInterface.onFailure(
+                        0,
+                        "Email already taken or invalid. Please try another email."
+                    )
                 }
             }
 
-            override fun onUserExists() {
-                signupInterface.onDismissProgress()
-
-                signupInterface.onFailure()
-            }
-
-
-            override fun onConnectionTimeOut() {
-                signupInterface.onDismissProgress()
-
-                signupInterface.onConnectionTimed()
-            }
-        })
 
     }
 

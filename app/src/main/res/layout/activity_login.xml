@@ -16,16 +16,16 @@
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent">
 
 
         <TextView
             android:id="@+id/textView2"
-            android:layout_marginRight="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Don't have an account?"/>
+            android:layout_marginRight="10dp"
+            android:text="Don't have an account?" />
 
         <TextView
             android:id="@+id/btn_signup"
@@ -36,10 +36,10 @@
 
     <ImageView
         android:id="@+id/imageView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="56dp"
-        android:src="@drawable/ic_text"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="50dp"
+        android:src="@drawable/ic_instagram"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
@@ -50,7 +50,7 @@
         android:layout_width="0dp"
         android:layout_height="50dp"
         android:layout_marginStart="15dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="25dp"
         android:layout_marginEnd="15dp"
         android:background="@drawable/edittext_background"
         android:hint="User name"
@@ -63,14 +63,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView2" />
 
+
     <EditText
         android:id="@+id/et_password"
         android:layout_width="0dp"
         android:layout_height="50dp"
         android:layout_marginStart="15dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="15dp"
+        android:layout_marginTop="5dp"
 
+        android:layout_marginEnd="15dp"
         android:background="@drawable/edittext_background"
         android:hint="Password"
         android:inputType="textPassword"
@@ -78,16 +79,15 @@
         android:padding="10dp"
         android:textSize="@dimen/text_large"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_user_error" />
-
 
     <Button
         android:id="@+id/btn_login"
         android:layout_width="0dp"
         android:layout_height="50dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="10dp"
         android:background="@drawable/btn_signin_bg"
         android:text="Login"
         android:textAllCaps="false"
@@ -102,8 +102,8 @@
         android:id="@+id/tv_user_error"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:padding="10dp"
+        android:layout_marginTop="2dp"
+        android:padding="5dp"
         android:text="Value is incorrect"
         android:textColor="@color/color_red"
         android:textSize="12sp"
@@ -116,8 +116,8 @@
         android:id="@+id/tv_pass_error"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:padding="10dp"
+        android:layout_marginTop="2dp"
+        android:padding="5dp"
         android:text="Value is incorrect"
         android:textColor="@color/color_red"
         android:textSize="12sp"

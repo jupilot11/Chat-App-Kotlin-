@@ -43,14 +43,13 @@ interface Contract {
 
         fun onEmpyFields(textViews: Array<TextView>, i: Int)
 
-        fun onFailure()
+        fun onFailure(type : Int, message : String)
 
         fun onConnectionTimed()
 
         fun onIntentSignIn()
 
         fun onPasswordError()
-
 
         fun onShowProgDialog()
 
@@ -63,6 +62,7 @@ interface Contract {
             editTexts: Array<EditText>,
             textViews: Array<TextView>,
             strusername: String,
+            strpassword: String,
             user: User
         )
 

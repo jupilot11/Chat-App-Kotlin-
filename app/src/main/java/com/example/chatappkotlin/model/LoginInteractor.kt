@@ -2,6 +2,7 @@ package com.example.chatappkotlin.model
 
 import com.example.chatappkotlin.util.FirebaseMethods
 import com.example.chatappkotlin.User
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 
@@ -10,9 +11,10 @@ class LoginInteractor {
     private var firebaseMethod: FirebaseMethods? = null
     private var database: FirebaseDatabase? = null
     private var table_user: DatabaseReference? = null
-
+    private var firebaseAuth: FirebaseAuth? = null
 
     constructor() {
+        firebaseAuth = FirebaseAuth.getInstance()
 
         database = FirebaseDatabase.getInstance()
         table_user = database!!.reference.child("User")

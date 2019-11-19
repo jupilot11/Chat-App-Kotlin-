@@ -40,6 +40,10 @@ class TextWatcherHelper : TextWatcher {
             R.id.et_username -> {
                 onTextChangedCallbacks?.onTextChanged()
             }
+            R.id.et_email ->{
+
+                onTextChangedCallbacks?.onTextChanged()
+            }
         }
 
     }
