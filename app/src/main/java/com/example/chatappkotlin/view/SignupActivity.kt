@@ -34,6 +34,7 @@ class SignupActivity : AppCompatActivity(), Contract.SignupActivityView, View.On
 
     private var file: File? = null
     private var uri: Uri? = null
+    private var uri1: Uri? = null
     private var signuPresenter: SignupPresenter? = null
 
     private var str_username = ""
@@ -42,6 +43,7 @@ class SignupActivity : AppCompatActivity(), Contract.SignupActivityView, View.On
     private var dialogHelper: DialogHelper? = null
     val REQUEST_IMAGE = 100
     val VIEW_IMAGE = 110
+    var uriArrayList : ArrayList<Uri>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -133,11 +135,11 @@ class SignupActivity : AppCompatActivity(), Contract.SignupActivityView, View.On
                     "ID" + System.currentTimeMillis()
                 )
 
-                if (uri != null) {
+                if (uriArrayList != null) {
 
                     signuPresenter?.onHandleSignup(
                         editTexts, textViews, str_email, str_password,
-                        uri!!, user
+                        uriArrayList!!, user
                     )
 
                 } else {
@@ -347,8 +349,12 @@ class SignupActivity : AppCompatActivity(), Contract.SignupActivityView, View.On
             if (resultCode == Activity.RESULT_OK) {
 
                 uri = data?.getParcelableExtra<Uri>("path")
+                uri1 = data?.getParcelableExtra<Uri>("display")
 
-                val uri1 = data?.getParcelableExtra<Uri>("display")
+                uriArrayList = ArrayList()
+                uriArrayList?.add(this.uri!!)
+                uriArrayList?.add(this.uri1!!)
+
 
                 circleImageview.setImageURI(uri1)
 

@@ -22,7 +22,7 @@ class SignupPresenter(signupActivityViews: Contract.SignupActivityView?) : Contr
         textViews: Array<TextView>,
         strusername: String,
         strpass : String,
-        uri: Uri,
+        uriArrayList: ArrayList<Uri>,
         user: User
     ) {
         var ctr = 0
@@ -45,7 +45,7 @@ class SignupPresenter(signupActivityViews: Contract.SignupActivityView?) : Contr
         }
         if (!isEmpty) {
 
-            signupInteractor?.signUp(user,uri,strpass, strusername ,this)
+            signupInteractor?.signUp(user,uriArrayList,strpass, strusername ,this)
         }
     }
 

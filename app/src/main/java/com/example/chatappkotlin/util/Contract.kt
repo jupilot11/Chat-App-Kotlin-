@@ -64,7 +64,7 @@ interface Contract {
             textViews: Array<TextView>,
             strusername: String,
             strpassword: String,
-            uri: Uri,
+            uriArrayList: ArrayList<Uri>,
             user: User
         )
 

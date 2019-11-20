@@ -15,6 +15,7 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.UploadTask
 import java.util.*
+import kotlin.collections.ArrayList
 
 class SignupInteractor {
 
@@ -25,6 +26,9 @@ class SignupInteractor {
     private var storage: FirebaseStorage? = null
     private var storageReference: StorageReference? = null
 
+    private var uriArrayList1: ArrayList<Uri>? = null
+    private var isEmpty = false
+
     constructor() {
 
         firebaseAuth = FirebaseAuth.getInstance()
@@ -34,6 +38,7 @@ class SignupInteractor {
         firebaseMethods = FirebaseMethods()
         storage = FirebaseStorage.getInstance()
         storageReference = storage!!.reference
+
 
     }
 
@@ -59,7 +64,7 @@ class SignupInteractor {
 
     fun signUp(
         user: User,
-        uri: Uri,
+        uriArrayList: ArrayList<Uri>,
         strPassword: String,
         str_username: String,
         signupInterface: SignupInterface
@@ -92,32 +97,60 @@ class SignupInteractor {
                                     val ref =
                                         storageReference?.child("images/" + UUID.randomUUID().toString())
 
-                                    ref?.putFile(uri)?.addOnSuccessListener {
-                                        ref.downloadUrl.addOnSuccessListener { uri ->
-                                            var user1: User = user
+                                    var ctr = 0
 
-                                            user1 = User(
-                                                user.str_email,
-                                                user.str_username,
-                                                user.str_password,
-                                                user.str_userId,
-                                                uri.toString()
-
-                                            )
+                                    for (i in uriArrayList.indices) {
 
 
-                                            table_user!!.push().setValue(user1)
-                                                .addOnCompleteListener { task ->
 
-                                                    if (task.isSuccessful) {
+                                        ref?.putFile(uriArrayList[i])?.addOnSuccessListener {
 
-                                                        signupInterface.onDismissProgress()
+                                            ref.downloadUrl.addOnSuccessListener { uri ->
 
-                                                        signupInterface.onSuccess(user1)
-                                                    }
-                                                }
+                                                uriArrayList1 = ArrayList()
+                                                uriArrayList1?.add(uri)
+
+                                                var user1: User = user
+                                                isEmpty= true
+
+                                                ctr++
+
+
+                                            }
                                         }
+
+
                                     }
+
+                                    if (ctr == 2) {
+
+
+                                        signupInterface.onDismissProgress()
+                                        signupInterface.onSuccess(user)
+
+
+//                                        user1 = User(
+//                                            user.str_email,
+//                                            user.str_username,
+//                                            user.str_password,
+//                                            user.str_userId,
+//                                            uri.toString()
+//
+//                                        )
+//
+//
+//                                        table_user!!.push().setValue(user1)
+//                                            .addOnCompleteListener { task ->
+//
+//                                                if (task.isSuccessful) {
+//
+//                                                    signupInterface.onDismissProgress()
+//
+//                                                    signupInterface.onSuccess(user1)
+//                                                }
+//                                            }
+                                    }
+
 
                                 }
 
