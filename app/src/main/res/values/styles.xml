@@ -21,66 +21,106 @@
     </style>
 
 
-    <declare-styleable name="CropImageView">
-        <attr name="cropGuidelines">
-            <enum name="off" value="0"/>
-            <enum name="onTouch" value="1"/>
-            <enum name="on" value="2"/>
-        </attr>
-        <attr name="cropScaleType">
-            <enum name="fitCenter" value="0"/>
-            <enum name="center" value="1"/>
-            <enum name="centerCrop" value="2"/>
-            <enum name="centerInside" value="3"/>
-        </attr>
-        <attr name="cropShape">
-            <enum name="rectangle" value="0"/>
-            <enum name="oval" value="1"/>
-        </attr>
-        <attr format="boolean" name="cropAutoZoomEnabled"/>
-        <attr format="integer" name="cropMaxZoom"/>
-        <attr format="boolean" name="cropMultiTouchEnabled"/>
-        <attr format="boolean" name="cropFixAspectRatio"/>
-        <attr format="integer" name="cropAspectRatioX"/>
-        <attr format="integer" name="cropAspectRatioY"/>
-        <attr format="float" name="cropInitialCropWindowPaddingRatio"/>
-        <attr format="dimension" name="cropBorderLineThickness"/>
-        <attr format="color" name="cropBorderLineColor"/>
-        <attr format="dimension" name="cropBorderCornerThickness"/>
-        <attr format="dimension" name="cropBorderCornerOffset"/>
-        <attr format="dimension" name="cropBorderCornerLength"/>
-        <attr format="color" name="cropBorderCornerColor"/>
-        <attr format="dimension" name="cropGuidelinesThickness"/>
-        <attr format="color" name="cropGuidelinesColor"/>
-        <attr format="color" name="cropBackgroundColor"/>
-        <attr format="dimension" name="cropSnapRadius"/>
-        <attr format="dimension" name="cropTouchRadius"/>
-        <attr format="boolean" name="cropSaveBitmapToInstanceState"/>
-        <attr format="boolean" name="cropShowCropOverlay"/>
-        <attr format="boolean" name="cropShowProgressBar"/>
-        <attr format="dimension" name="cropMinCropWindowWidth"/>
-        <attr format="dimension" name="cropMinCropWindowHeight"/>
-        <attr format="float" name="cropMinCropResultWidthPX"/>
-        <attr format="float" name="cropMinCropResultHeightPX"/>
-        <attr format="float" name="cropMaxCropResultWidthPX"/>
-        <attr format="float" name="cropMaxCropResultHeightPX"/>
-        <attr format="boolean" name="cropFlipHorizontally"/>
-        <attr format="boolean" name="cropFlipVertically"/>
-    </declare-styleable>
-    <string name="crop_image_activity_no_permissions">Cancelling, required permissions are not granted</string>
-    <string name="crop_image_activity_title"/>
-    <string name="crop_image_menu_crop">Crop</string>
-    <string name="crop_image_menu_flip">Flip</string>
-    <string name="crop_image_menu_flip_horizontally">Flip horizontally</string>
-    <string name="crop_image_menu_flip_vertically">Flip vertically</string>
-    <string name="crop_image_menu_rotate_left">Rotate counter clockwise</string>
-    <string name="crop_image_menu_rotate_right">Rotate</string>
-    <string name="pick_image_intent_chooser_title">Select source</string>
-
-
     <style name="DialogAnimation">
         <item name="android:windowEnterAnimation">@android:anim/fade_in</item>
         <item name="android:windowExitAnimation">@android:anim/fade_out</item>
     </style>
+
+
+    <style name="ucrop_ImageViewWidgetIcon">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:scaleType">fitCenter</item>
+        <item name="android:duplicateParentState">true</item>
+    </style>
+
+    <style name="ucrop_WrapperIconState">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:background">?attr/selectableItemBackground</item>
+        <item name="android:clickable">true</item>
+        <item name="android:gravity">center</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+
+    <style name="ucrop_WrapperRotateButton">
+        <item name="android:layout_width">@dimen/ucrop_size_wrapper_rotate_button</item>
+        <item name="android:layout_height">@dimen/ucrop_size_wrapper_rotate_button</item>
+        <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
+        <item name="android:clickable">true</item>
+    </style>
+
+    <style name="ucrop_TextViewCropAspectRatio">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">@dimen/ucrop_height_crop_aspect_ratio_text</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:duplicateParentState">true</item>
+        <item name="android:textColor">@color/ucrop_color_widget_text</item>
+    </style>
+
+    <style name="ucrop_TextViewWidgetText">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/ucrop_color_widget_text</item>
+        <item name="android:layout_marginTop">@dimen/ucrop_margin_top_widget_text</item>
+        <item name="android:textSize">@dimen/ucrop_text_size_widget_text</item>
+    </style>
+
+    <style name="ucrop_TextViewWidget">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:layout_marginTop">@dimen/ucrop_margin_top_controls_text</item>
+        <item name="android:textColor">@color/ucrop_color_widget_active</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">@dimen/ucrop_text_size_controls_text</item>
+    </style>
+
+
+    <declare-styleable name="ucrop_UCropView">
+
+        <!--Crop image view-->
+        <attr name="ucrop_aspect_ratio_x" format="float" />
+        <attr name="ucrop_aspect_ratio_y" format="float" />
+
+        <!--Overlay view-->
+        <attr name="ucrop_show_oval_crop_frame" format="boolean" />
+        <attr name="ucrop_circle_dimmed_layer" format="boolean" />
+        <attr name="ucrop_dimmed_color" format="color" />
+
+        <attr name="ucrop_grid_stroke_size" format="dimension" />
+        <attr name="ucrop_grid_color" format="color" />
+        <attr name="ucrop_grid_row_count" format="integer" />
+        <attr name="ucrop_grid_column_count" format="integer" />
+        <attr name="ucrop_show_grid" format="boolean" />
+
+        <attr name="ucrop_frame_stroke_size" format="dimension" />
+        <attr name="ucrop_frame_color" format="color" />
+        <attr name="ucrop_show_frame" format="boolean" />
+
+    </declare-styleable>
+
+    <declare-styleable name="ucrop_AspectRatioTextView">
+
+        <attr name="ucrop_artv_ratio_title" format="string" />
+
+        <attr name="ucrop_artv_ratio_x" format="float" />
+        <attr name="ucrop_artv_ratio_y" format="float" />
+
+    </declare-styleable>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
 
 </resources>

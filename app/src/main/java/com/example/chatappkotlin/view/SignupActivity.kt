@@ -1,6 +1,7 @@
 package com.example.chatappkotlin.view
 
 import android.Manifest
+import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -39,6 +40,9 @@ class SignupActivity : AppCompatActivity(), Contract.SignupActivityView, View.On
     private var str_password = ""
     private var str_email = ""
     private var dialogHelper: DialogHelper? = null
+
+    val REQUEST_IMAGE = 100
+    val VIEW_IMAGE = 110
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -160,7 +164,7 @@ class SignupActivity : AppCompatActivity(), Contract.SignupActivityView, View.On
                                     override fun onPermissionsChecked(report: MultiplePermissionsReport) {
                                         if (report.areAllPermissionsGranted()) {
 
-                                            ClickImageFromCamera()
+                                            launchCameraIntent()
                                         }
 
                                         if (report.isAnyPermissionPermanentlyDenied) {
@@ -182,10 +186,35 @@ class SignupActivity : AppCompatActivity(), Contract.SignupActivityView, View.On
 
                         override fun onSelectGallery() {
 
-                            Toast.makeText(this@SignupActivity, "Gallery", Toast.LENGTH_SHORT)
-                                .show()
-
                             dialogHelper!!.dismissUploadDialog()
+
+                            Dexter.withActivity(this@SignupActivity)
+                                .withPermissions(
+                                    Manifest.permission.CAMERA,
+                                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                    Manifest.permission.READ_EXTERNAL_STORAGE
+                                )
+                                .withListener(object : MultiplePermissionsListener {
+                                    override fun onPermissionsChecked(report: MultiplePermissionsReport) {
+                                        if (report.areAllPermissionsGranted()) {
+
+                                            launchGalleryIntent()
+                                        }
+
+                                        if (report.isAnyPermissionPermanentlyDenied) {
+
+                                            showSettingsDialog()
+                                        }
+                                    }
+
+                                    override fun onPermissionRationaleShouldBeShown(
+                                        permissions: List<PermissionRequest>,
+                                        token: PermissionToken
+                                    ) {
+                                        token.continuePermissionRequest()
+                                    }
+                                }).check()
+
 
                         }
 
@@ -246,25 +275,6 @@ class SignupActivity : AppCompatActivity(), Contract.SignupActivityView, View.On
     }
 
 
-    fun ClickImageFromCamera() {
-
-        var intent = Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE)
-
-        file = File(
-            getExternalStorageDirectory(),
-            "file" + System.currentTimeMillis().toString() + ".jpg"
-        )
-        uri = Uri.fromFile(file)
-
-        intent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, uri)
-
-        intent.putExtra("return-data", true)
-
-        startActivityForResult(intent, 0)
-
-    }
-
-
     private fun showSettingsDialog() {
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Grant Permissions")
@@ -287,5 +297,59 @@ class SignupActivity : AppCompatActivity(), Contract.SignupActivityView, View.On
         val uri = Uri.fromParts("package", this.getPackageName(), null)
         intent.data = uri
         startActivityForResult(intent, 101)
+    }
+
+    private fun launchCameraIntent() {
+        val intent = Intent(this, ImagePickerActivity::class.java)
+        intent.putExtra(
+            ImagePickerActivity.INTENT_IMAGE_PICKER_OPTION,
+            ImagePickerActivity.REQUEST_IMAGE_CAPTURE
+        )
+
+        // setting aspect ratio
+        intent.putExtra(ImagePickerActivity.INTENT_LOCK_ASPECT_RATIO, true)
+        intent.putExtra(ImagePickerActivity.INTENT_ASPECT_RATIO_X, 1) // 16x9, 1x1, 3:4, 3:2
+        intent.putExtra(ImagePickerActivity.INTENT_ASPECT_RATIO_Y, 1)
+
+        // setting maximum bitmap width and height
+        intent.putExtra(ImagePickerActivity.INTENT_SET_BITMAP_MAX_WIDTH_HEIGHT, true)
+        intent.putExtra(ImagePickerActivity.INTENT_BITMAP_MAX_WIDTH, 1000)
+        intent.putExtra(ImagePickerActivity.INTENT_BITMAP_MAX_HEIGHT, 1000)
+
+        startActivityForResult(intent, REQUEST_IMAGE)
+    }
+
+    private fun launchGalleryIntent() {
+        val intent = Intent(this, ImagePickerActivity::class.java)
+        intent.putExtra(
+            ImagePickerActivity.INTENT_IMAGE_PICKER_OPTION,
+            ImagePickerActivity.REQUEST_GALLERY_IMAGE
+        )
+
+        // setting aspect ratio
+        intent.putExtra(ImagePickerActivity.INTENT_LOCK_ASPECT_RATIO, true)
+        intent.putExtra(ImagePickerActivity.INTENT_ASPECT_RATIO_X, 1) // 16x9, 1x1, 3:4, 3:2
+        intent.putExtra(ImagePickerActivity.INTENT_ASPECT_RATIO_Y, 1)
+        startActivityForResult(intent, REQUEST_IMAGE)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == REQUEST_IMAGE) {
+
+            if (resultCode == Activity.RESULT_OK) {
+
+                val uri = data?.getParcelableExtra<Uri>("path")
+                val uri1 = data?.getParcelableExtra<Uri>("display")
+
+                circleImageview.setImageURI(uri1)
+
+                Toast.makeText(this@SignupActivity, "NISULOD", Toast.LENGTH_SHORT)
+                    .show()
+
+            }
+
+        }
     }
 }

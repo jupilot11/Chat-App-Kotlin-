@@ -23,8 +23,8 @@
 
     <com.example.chatappkotlin.util.customview.CircleImageview
         android:id="@+id/circleImageview"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
         android:layout_marginTop="15dp"
         android:src="@drawable/ic_person_black_48dp"
         app:layout_constraintEnd_toEndOf="parent"
