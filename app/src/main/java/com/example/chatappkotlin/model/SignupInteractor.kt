@@ -1,14 +1,20 @@
 package com.example.chatappkotlin.model
 
+import android.net.Uri
 import com.example.chatappkotlin.util.FirebaseMethods
 import com.example.chatappkotlin.User
 import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.gms.tasks.OnSuccessListener
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
+import com.google.firebase.storage.UploadTask
+import java.util.*
 
 class SignupInteractor {
 
@@ -16,7 +22,8 @@ class SignupInteractor {
     private var database: FirebaseDatabase? = null
     private var table_user: DatabaseReference? = null
     private var firebaseAuth: FirebaseAuth? = null
-
+    private var storage: FirebaseStorage? = null
+    private var storageReference: StorageReference? = null
 
     constructor() {
 
@@ -25,6 +32,9 @@ class SignupInteractor {
         database = FirebaseDatabase.getInstance()
         table_user = database!!.reference.child("User")
         firebaseMethods = FirebaseMethods()
+        storage = FirebaseStorage.getInstance()
+        storageReference = storage!!.reference
+
     }
 
 
@@ -49,6 +59,7 @@ class SignupInteractor {
 
     fun signUp(
         user: User,
+        uri: Uri,
         strPassword: String,
         str_username: String,
         signupInterface: SignupInterface
@@ -76,16 +87,38 @@ class SignupInteractor {
                             object : FirebaseMethods.RegistrationCallback {
                                 override fun onSuccess() {
 
-                                    signupInterface.onDismissProgress()
-                                    table_user!!.push().setValue(user)
-                                        .addOnCompleteListener { task ->
 
-                                            if (task.isSuccessful) {
+                                    val imageNmae = UUID.randomUUID().toString()
+                                    val ref =
+                                        storageReference?.child("images/" + UUID.randomUUID().toString())
+
+                                    ref?.putFile(uri)?.addOnSuccessListener {
+                                        ref.downloadUrl.addOnSuccessListener { uri ->
+                                            var user1: User = user
+
+                                            user1 = User(
+                                                user.str_email,
+                                                user.str_username,
+                                                user.str_password,
+                                                user.str_userId,
+                                                uri.toString()
+
+                                            )
 
 
-                                                signupInterface.onSuccess(user)
-                                            }
+                                            table_user!!.push().setValue(user1)
+                                                .addOnCompleteListener { task ->
+
+                                                    if (task.isSuccessful) {
+
+                                                        signupInterface.onDismissProgress()
+
+                                                        signupInterface.onSuccess(user1)
+                                                    }
+                                                }
                                         }
+                                    }
+
                                 }
 
                                 override fun onUserExists() {

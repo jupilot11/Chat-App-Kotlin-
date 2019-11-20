@@ -6,11 +6,11 @@ import android.os.Parcelable
 class User : Parcelable {
 
 
-    var str_email : String? = null
+    var str_email: String? = null
     var str_username: String? = null
     var str_password: String? = null
     var str_userId: String? = null
-
+    var str_profile: String? = null
 
 
     constructor(parcel: Parcel) : this() {
@@ -18,9 +18,16 @@ class User : Parcelable {
         str_username = parcel.readString()
         str_password = parcel.readString()
         str_userId = parcel.readString()
+        str_profile = parcel.readString()
     }
 
-    constructor(strEmail : String?, str_username: String?, str_password: String?, str_userId: String?) {
+
+    constructor(
+        strEmail: String?,
+        str_username: String?,
+        str_password: String?,
+        str_userId: String?
+    ) {
         this.str_email = strEmail
         this.str_username = str_username
         this.str_password = str_password
@@ -28,6 +35,20 @@ class User : Parcelable {
     }
 
     constructor()
+
+    constructor(
+        str_email: String?,
+        str_username: String?,
+        str_password: String?,
+        str_userId: String?,
+        str_profile: String?
+    ) {
+        this.str_email = str_email
+        this.str_username = str_username
+        this.str_password = str_password
+        this.str_userId = str_userId
+        this.str_profile = str_profile
+    }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(str_email)

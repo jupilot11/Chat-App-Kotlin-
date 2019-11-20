@@ -1,5 +1,6 @@
 package com.example.chatappkotlin.util
 
+import android.net.Uri
 import android.widget.EditText
 import android.widget.TextView
 import com.example.chatappkotlin.User
@@ -63,6 +64,7 @@ interface Contract {
             textViews: Array<TextView>,
             strusername: String,
             strpassword: String,
+            uri: Uri,
             user: User
         )
 

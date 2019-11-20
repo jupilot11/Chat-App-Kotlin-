@@ -40,7 +40,6 @@ class SignupActivity : AppCompatActivity(), Contract.SignupActivityView, View.On
     private var str_password = ""
     private var str_email = ""
     private var dialogHelper: DialogHelper? = null
-
     val REQUEST_IMAGE = 100
     val VIEW_IMAGE = 110
 
@@ -106,10 +105,6 @@ class SignupActivity : AppCompatActivity(), Contract.SignupActivityView, View.On
     override fun onSuccess(user: User) {
 
 
-//        val intent = Intent(this@SignupActivity, MessagesActivity::class.java)
-//        intent.putExtra("user", user)
-//        startActivity(intent)
-
         Toast.makeText(this@SignupActivity, "Success pota", Toast.LENGTH_SHORT).show()
 
     }
@@ -131,14 +126,25 @@ class SignupActivity : AppCompatActivity(), Contract.SignupActivityView, View.On
                 val editTexts = arrayOf<EditText>(et_email, et_username, et_password)
                 val textViews = arrayOf<TextView>(tv_email, tv_user_error, tv_pass_error)
 
-                val user = User(
+                var user = User(
                     str_email,
                     str_username,
                     str_password,
                     "ID" + System.currentTimeMillis()
                 )
 
-                signuPresenter?.onHandleSignup(editTexts, textViews, str_email, str_password, user)
+                if (uri != null) {
+
+                    signuPresenter?.onHandleSignup(
+                        editTexts, textViews, str_email, str_password,
+                        uri!!, user
+                    )
+
+                } else {
+
+                    Toast.makeText(this, "Please upload image", Toast.LENGTH_SHORT).show()
+
+                }
 
             }
 
@@ -340,7 +346,8 @@ class SignupActivity : AppCompatActivity(), Contract.SignupActivityView, View.On
 
             if (resultCode == Activity.RESULT_OK) {
 
-                val uri = data?.getParcelableExtra<Uri>("path")
+                uri = data?.getParcelableExtra<Uri>("path")
+
                 val uri1 = data?.getParcelableExtra<Uri>("display")
 
                 circleImageview.setImageURI(uri1)
@@ -352,4 +359,5 @@ class SignupActivity : AppCompatActivity(), Contract.SignupActivityView, View.On
 
         }
     }
+
 }

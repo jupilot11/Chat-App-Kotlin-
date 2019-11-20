@@ -1,5 +1,6 @@
 package com.example.chatappkotlin.presenter
 
+import android.net.Uri
 import android.widget.EditText
 import android.widget.TextView
 import com.example.chatappkotlin.User
@@ -7,7 +8,6 @@ import com.example.chatappkotlin.model.SignupInteractor
 import com.example.chatappkotlin.util.Contract
 
 class SignupPresenter(signupActivityViews: Contract.SignupActivityView?) : Contract.SignUpActivityPresenter, SignupInteractor.SignupInterface {
-
 
     private var signupActivityView: Contract.SignupActivityView? = signupActivityViews
     private var signupInteractor: SignupInteractor? = null
@@ -22,6 +22,7 @@ class SignupPresenter(signupActivityViews: Contract.SignupActivityView?) : Contr
         textViews: Array<TextView>,
         strusername: String,
         strpass : String,
+        uri: Uri,
         user: User
     ) {
         var ctr = 0
@@ -44,7 +45,7 @@ class SignupPresenter(signupActivityViews: Contract.SignupActivityView?) : Contr
         }
         if (!isEmpty) {
 
-            signupInteractor?.signUp(user,strpass, strusername ,this)
+            signupInteractor?.signUp(user,uri,strpass, strusername ,this)
         }
     }
 
