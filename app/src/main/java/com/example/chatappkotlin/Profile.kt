@@ -2,6 +2,7 @@ package com.example.chatappkotlin
 
 import android.os.Parcel
 import android.os.Parcelable
+import java.lang.System.`in`
 
 class Profile : Parcelable{
 
@@ -10,6 +11,7 @@ class Profile : Parcelable{
 
     constructor(parcel: Parcel) : this() {
 
+        arrayList = parcel.createTypedArrayList(ProfilePic.CREATOR)
     }
 
 
@@ -21,6 +23,8 @@ class Profile : Parcelable{
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
 
+
+        parcel.writeTypedList(arrayList)
     }
 
     override fun describeContents(): Int {

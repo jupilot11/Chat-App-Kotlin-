@@ -15,10 +15,11 @@
         android:roundIcon="@drawable/ic_instagram"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".view.HomeActivity"></activity>
         <activity
             android:name=".view.ImagePickerActivity"
             android:label="@string/title_activity_image_picker"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".view.SignupActivity"
             android:parentActivityName=".view.SignInActivity"
@@ -44,7 +45,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
-
 
         <activity
             android:name=".util.customview.Ucrop.UCropActivity"

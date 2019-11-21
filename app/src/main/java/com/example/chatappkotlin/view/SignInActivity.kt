@@ -11,6 +11,7 @@ import androidx.core.app.NavUtils
 import com.example.chatappkotlin.R
 import com.example.chatappkotlin.User
 import com.example.chatappkotlin.presenter.LoginPresenter
+import com.example.chatappkotlin.util.Constants
 import com.example.chatappkotlin.util.Contract
 import com.example.chatappkotlin.util.DialogHelper
 import com.example.chatappkotlin.util.TextWatcherHelper
@@ -90,8 +91,9 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener, Contract.Login
 
     override fun onSuccess(user: User) {
 
-        Toast.makeText(this, "Success Login", Toast.LENGTH_SHORT).show()
-
+        val intent = Intent(this, HomeActivity::class.java)
+        intent.putExtra(Constants.INTENT_USER, user)
+        startActivity(intent)
 
     }
 

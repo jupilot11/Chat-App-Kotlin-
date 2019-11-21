@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -9,14 +9,12 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-
-    <style name="ToolbarPopup" parent="Base.ThemeOverlay.AppCompat.Light">
+    <style name="ToolbarPopup" parent="Theme.MaterialComponents.Light">
         <item name="android:textColorPrimary">@color/white</item>
         <item name="android:colorBackground">@color/white</item>
     </style>
 
-
-    <style name="MyAlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
+    <style name="MyAlertDialogStyle" parent="Theme.MaterialComponents.Light.Dialog.Alert">
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 

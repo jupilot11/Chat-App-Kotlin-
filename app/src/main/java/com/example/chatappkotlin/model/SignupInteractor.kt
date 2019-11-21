@@ -28,16 +28,12 @@ class SignupInteractor {
     private var storageReference: StorageReference? = null
 
     private var uriArrayList1: ArrayList<Uri>? = null
-    private var isEmpty = false
-    internal var last_image: Int = 0
 
-    private var profilePic : ProfilePic? = null
     internal val gotResult = BooleanArray(1)
 
     constructor() {
 
         firebaseAuth = FirebaseAuth.getInstance()
-
         database = FirebaseDatabase.getInstance()
         table_user = database!!.reference.child("User")
         firebaseMethods = FirebaseMethods()
@@ -107,62 +103,60 @@ class SignupInteractor {
                                                 if (ctr == 2) {
 
                                                     var user1: User = user
-                                                    user1 = User(user.str_email, user.str_username, user.str_password, user.str_userId)
+                                                    user1 = User(
+                                                        user.str_email,
+                                                        user.str_username,
+                                                        user.str_password,
+                                                        user.str_userId
+                                                    )
 
 
-                                                    table_user!!.push().setValue(user1).addOnCompleteListener { task ->
+                                                    table_user!!.push().setValue(user1)
+                                                        .addOnCompleteListener { task ->
 
-                                                        if (task.isSuccessful) {
+                                                            if (task.isSuccessful) {
 
+                                                                firebaseMethods?.insertProfileImage(
+                                                                    table_user!!,
+                                                                    user1,
+                                                                    uriArrayList1!!,
+                                                                    object :
+                                                                        FirebaseMethods.LoginCallback {
+                                                                        override fun onSuccess(user: User?) {
 
-                                                            firebaseMethods?.insertProfileImage(
-                                                                table_user!!, user1,
-                                                                uriArrayList1!!, object : FirebaseMethods.LoginCallback{
-                                                                    override fun onSuccess(user: User?) {
-
-                                                                        signupInterface.onDismissProgress()
-                                                                        if (user != null) {
-                                                                            signupInterface.onSuccess(user)
+                                                                            signupInterface.onDismissProgress()
+                                                                            if (user != null) {
+                                                                                signupInterface.onSuccess(user)
+                                                                            }
                                                                         }
-                                                                    }
 
-                                                                    override fun onFailure() {
-                                                                        signupInterface.onDismissProgress()
-                                                                        signupInterface.onFailure(3, "You failed")
-                                                                    }
+                                                                        override fun onFailure() {
+                                                                            signupInterface.onDismissProgress()
+                                                                            signupInterface.onFailure(
+                                                                                3,
+                                                                                "You failed"
+                                                                            )
+                                                                        }
 
-                                                                    override fun onConnectionTimeOut() {
-                                                                        signupInterface.onDismissProgress()
-                                                                        signupInterface.onConnectionTimed()
+                                                                        override fun onConnectionTimeOut() {
+                                                                            signupInterface.onDismissProgress()
+                                                                            signupInterface.onConnectionTimed()
 
-                                                                    }
+                                                                        }
 
-                                                                    override fun onErrorPassword() {
-                                                                        signupInterface.onDismissProgress()
-                                                                    }
+                                                                        override fun onErrorPassword() {
+                                                                            signupInterface.onDismissProgress()
+                                                                        }
+                                                                    })
 
-                                                                })
-
-
-
+                                                            }
                                                         }
-                                                    }
-
-
                                                 }
-
                                             }
-
 
                                         }
 
                                     }
-
-
-
-
-
-//
 
                                 }
 
