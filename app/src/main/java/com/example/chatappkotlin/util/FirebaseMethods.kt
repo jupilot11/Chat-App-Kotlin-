@@ -2,6 +2,7 @@ package com.example.chatappkotlin.util
 
 import android.net.Uri
 import android.os.Handler
+import com.example.chatappkotlin.Profile
 import com.example.chatappkotlin.ProfilePic
 import com.example.chatappkotlin.User
 import com.google.firebase.database.*
@@ -19,7 +20,7 @@ class FirebaseMethods {
     private var isnotEqual = false
     private var isEqual = false
     private var user: User? = null
-
+    private var arrayList : ArrayList<ProfilePic>? = null
 
     fun firebaseRegistration(
         databaseReference: DatabaseReference,
@@ -184,8 +185,6 @@ class FirebaseMethods {
 
                             isEqual = true
 
-
-
                             for (datasnaphot2 in dataSnapshot1.child("photos").children) {
 
                                 var email = dataSnapshot1.child("str_email").value.toString()
@@ -193,9 +192,23 @@ class FirebaseMethods {
                                 var name = dataSnapshot1.child("str_username").value.toString()
                                 var password = dataSnapshot1.child("str_password").value.toString()
 
-    
+                                arrayList = ArrayList()
 
-                                user = User(email, name, password, userid)
+
+                                for ( i in 0 until dataSnapshot1.child("photos").childrenCount){
+
+                                    var bool_profile = datasnaphot2.child("_profile").value.toString()
+                                    var orig_uri = datasnaphot2.child("orig_uri").value.toString()
+                                    var cropper_uri = datasnaphot2.child("uri").value.toString()
+
+                                    var pic = ProfilePic(bool_profile, orig_uri, cropper_uri)
+
+                                    arrayList!!.add(pic)
+                                }
+
+                                var profile = Profile(arrayList)
+
+                                user = User(email, name, password, userid,profile)
 
                                 break
 
