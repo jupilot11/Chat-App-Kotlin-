@@ -81,7 +81,12 @@ class SignupActivity : AppCompatActivity(), Contract.SignupActivityView, View.On
         if (type == 0) {
             tv_email.visibility = View.VISIBLE
             tv_email.text = message
-        } else {
+
+        } else if (type == 3){
+
+            Toast.makeText(this@SignupActivity, message, Toast.LENGTH_SHORT).show()
+
+        } else{
             tv_user_error.visibility = View.VISIBLE
 
         }

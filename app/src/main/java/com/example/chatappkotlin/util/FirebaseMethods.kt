@@ -1,13 +1,17 @@
 package com.example.chatappkotlin.util
 
+import android.net.Uri
 import android.os.Handler
+import com.example.chatappkotlin.ProfilePic
 import com.example.chatappkotlin.User
 import com.google.firebase.database.*
 
 class FirebaseMethods {
 
-    var valueEventListener1 : ValueEventListener? = null
-    var valueEventListener2 : ValueEventListener? = null
+    var valueEventListener1: ValueEventListener? = null
+    var valueEventListener2: ValueEventListener? = null
+    var valueEventListener3: ValueEventListener? = null
+    var valueEventListener4: ValueEventListener? = null
 
     internal val gotResult = BooleanArray(1)
 
@@ -17,7 +21,11 @@ class FirebaseMethods {
     private var user: User? = null
 
 
-    fun  firebaseRegistration(databaseReference: DatabaseReference, str_username : String, registrationCallback: RegistrationCallback){
+    fun firebaseRegistration(
+        databaseReference: DatabaseReference,
+        str_username: String,
+        registrationCallback: RegistrationCallback
+    ) {
 
 
         valueEventListener1 = object : ValueEventListener {
@@ -82,7 +90,7 @@ class FirebaseMethods {
             }
         }
         val pdCanceller = Handler()
-        pdCanceller.postDelayed(progressRunnable, 10000)
+        pdCanceller.postDelayed(progressRunnable, 120000)
     }
 
 
@@ -101,6 +109,59 @@ class FirebaseMethods {
         fun onConnectionTimeOut()
     }
 
+    fun insertProfileImage(
+        databaseReference: DatabaseReference,
+        user: User,
+        uriArrayList1: ArrayList<Uri>,
+        loginCallback: LoginCallback
+    ) {
+
+        valueEventListener3 = object : ValueEventListener {
+            override fun onCancelled(p0: DatabaseError) {
+                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
+
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                gotResult[0] = true
+
+                for (dataSnapshot1 in dataSnapshot.children) {
+
+                    val user_email = dataSnapshot1.child("str_email").value.toString()
+
+                    if (user_email.equals(user.str_email)) {
+
+                        var last_image = 0
+                        var tot = last_image + 1
+
+
+                        var profilePic = ProfilePic(
+                            uriArrayList1[0].toString(), "true", uriArrayList1[1].toString()
+
+                        )
+
+                        databaseReference.child(dataSnapshot1.key.toString()).child("photos")
+                            .child("0$tot")
+                            .setValue(profilePic).addOnSuccessListener {
+
+                                loginCallback.onSuccess(user)
+                                databaseReference.removeEventListener(valueEventListener3 as ValueEventListener)
+                            }
+
+                    }
+                }
+
+            }
+
+        }
+
+        databaseReference.addValueEventListener(valueEventListener3 as ValueEventListener)
+        checkConnectionTimeout(object : ConnectionTimeoutCallback {
+            override fun onConnectionTimeOut() {
+                loginCallback.onConnectionTimeOut()
+                databaseReference.removeEventListener(valueEventListener3 as ValueEventListener)
+            }
+        })
+    }
 
     fun firebaseLogin(
         databaseReference: DatabaseReference,
@@ -117,15 +178,30 @@ class FirebaseMethods {
                     isEqual = false
                     for (dataSnapshot1 in dataSnapshot.children) {
 
-                        val username = dataSnapshot1.child("str_username").value.toString()
+                        val username = dataSnapshot1.child("str_email").value.toString()
 
                         if (username.equals(str_username, ignoreCase = true)) {
 
                             isEqual = true
 
-                            user = dataSnapshot1.getValue(User::class.java)
 
-                            break
+
+                            for (datasnaphot2 in dataSnapshot1.child("photos").children) {
+
+                                var email = dataSnapshot1.child("str_email").value.toString()
+                                var userid = dataSnapshot1.child("str_userId").value.toString()
+                                var name = dataSnapshot1.child("str_username").value.toString()
+                                var password = dataSnapshot1.child("str_password").value.toString()
+
+    
+
+                                user = User(email, name, password, userid)
+
+                                break
+
+                            }
+
+
                         }
 
                     }
@@ -167,8 +243,6 @@ class FirebaseMethods {
             }
         })
     }
-
-
 
 
     interface LoginCallback {

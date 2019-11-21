@@ -1,6 +1,8 @@
 package com.example.chatappkotlin.model
 
 import android.net.Uri
+import android.os.Handler
+import com.example.chatappkotlin.ProfilePic
 import com.example.chatappkotlin.util.FirebaseMethods
 import com.example.chatappkotlin.User
 import com.google.android.gms.tasks.OnCompleteListener
@@ -9,8 +11,7 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.UploadTask
@@ -28,6 +29,10 @@ class SignupInteractor {
 
     private var uriArrayList1: ArrayList<Uri>? = null
     private var isEmpty = false
+    internal var last_image: Int = 0
+
+    private var profilePic : ProfilePic? = null
+    internal val gotResult = BooleanArray(1)
 
     constructor() {
 
@@ -63,21 +68,14 @@ class SignupInteractor {
     }
 
     fun signUp(
-        user: User,
-        uriArrayList: ArrayList<Uri>,
-        strPassword: String,
-        str_username: String,
-        signupInterface: SignupInterface
-    ) {
-        signupInterface.onShowProgDialog()
+        user: User, uriArrayList: ArrayList<Uri>, strPassword: String, str_username: String, signupInterface: SignupInterface) {
 
-        firebaseAuth?.createUserWithEmailAndPassword(str_username, strPassword)
-            ?.addOnCompleteListener {
+        signupInterface.onShowProgDialog()
+        firebaseAuth?.createUserWithEmailAndPassword(str_username, strPassword)?.addOnCompleteListener {
 
                 if (it.isSuccessful) {
                     val firebaseUser = firebaseAuth?.currentUser
                     val userId = firebaseUser?.uid
-
 
                     if (it.exception is FirebaseAuthUserCollisionException) run {
 
@@ -86,71 +84,85 @@ class SignupInteractor {
 
                     } else {
 
-                        firebaseMethods?.firebaseRegistration(
-                            table_user!!,
-                            userId!!,
-                            object : FirebaseMethods.RegistrationCallback {
+                        firebaseMethods?.firebaseRegistration(table_user!!, userId!!, object : FirebaseMethods.RegistrationCallback {
                                 override fun onSuccess() {
-
-
-                                    val imageNmae = UUID.randomUUID().toString()
-                                    val ref =
-                                        storageReference?.child("images/" + UUID.randomUUID().toString())
 
                                     var ctr = 0
 
-                                    for (i in uriArrayList.indices) {
+                                    uriArrayList1 = ArrayList()
 
+                                    for (i in 0 until uriArrayList.size) {
 
+                                        val ref =
+                                            storageReference?.child("images/" + UUID.randomUUID().toString())
 
                                         ref?.putFile(uriArrayList[i])?.addOnSuccessListener {
-
                                             ref.downloadUrl.addOnSuccessListener { uri ->
 
-                                                uriArrayList1 = ArrayList()
                                                 uriArrayList1?.add(uri)
-
-                                                var user1: User = user
-                                                isEmpty= true
 
                                                 ctr++
 
 
+                                                if (ctr == 2) {
+
+                                                    var user1: User = user
+                                                    user1 = User(user.str_email, user.str_username, user.str_password, user.str_userId)
+
+
+                                                    table_user!!.push().setValue(user1).addOnCompleteListener { task ->
+
+                                                        if (task.isSuccessful) {
+
+
+                                                            firebaseMethods?.insertProfileImage(
+                                                                table_user!!, user1,
+                                                                uriArrayList1!!, object : FirebaseMethods.LoginCallback{
+                                                                    override fun onSuccess(user: User?) {
+
+                                                                        signupInterface.onDismissProgress()
+                                                                        if (user != null) {
+                                                                            signupInterface.onSuccess(user)
+                                                                        }
+                                                                    }
+
+                                                                    override fun onFailure() {
+                                                                        signupInterface.onDismissProgress()
+                                                                        signupInterface.onFailure(3, "You failed")
+                                                                    }
+
+                                                                    override fun onConnectionTimeOut() {
+                                                                        signupInterface.onDismissProgress()
+                                                                        signupInterface.onConnectionTimed()
+
+                                                                    }
+
+                                                                    override fun onErrorPassword() {
+                                                                        signupInterface.onDismissProgress()
+                                                                    }
+
+                                                                })
+
+
+
+                                                        }
+                                                    }
+
+
+                                                }
+
                                             }
+
+
                                         }
 
-
                                     }
 
-                                    if (ctr == 2) {
 
 
-                                        signupInterface.onDismissProgress()
-                                        signupInterface.onSuccess(user)
 
 
-//                                        user1 = User(
-//                                            user.str_email,
-//                                            user.str_username,
-//                                            user.str_password,
-//                                            user.str_userId,
-//                                            uri.toString()
 //
-//                                        )
-//
-//
-//                                        table_user!!.push().setValue(user1)
-//                                            .addOnCompleteListener { task ->
-//
-//                                                if (task.isSuccessful) {
-//
-//                                                    signupInterface.onDismissProgress()
-//
-//                                                    signupInterface.onSuccess(user1)
-//                                                }
-//                                            }
-                                    }
-
 
                                 }
 
@@ -184,5 +196,25 @@ class SignupInteractor {
     fun onHandleLoginIntent(signupInterface: SignupInterface) {
 
         signupInterface.onIntentSignin()
+    }
+
+
+    interface ConnectionTimeoutCallback {
+
+
+        fun onConnectionTimeOut()
+    }
+
+    private fun checkConnectionTimeout(connectionTimeoutCallback: ConnectionTimeoutCallback) {
+        val progressRunnable = {
+
+            if (!gotResult[0]) { //  Timeout
+
+                connectionTimeoutCallback.onConnectionTimeOut()
+
+            }
+        }
+        val pdCanceller = Handler()
+        pdCanceller.postDelayed(progressRunnable, 10000)
     }
 }

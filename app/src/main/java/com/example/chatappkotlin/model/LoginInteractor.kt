@@ -44,6 +44,7 @@ class LoginInteractor {
 
 
         loginInterface.onShowProgDialog()
+
         firebaseMethod?.firebaseLogin(
             table_user!!,
             username,
