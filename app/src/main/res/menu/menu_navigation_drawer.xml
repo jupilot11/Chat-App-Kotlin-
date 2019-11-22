@@ -8,7 +8,7 @@
         <group android:id="@+id/home">
 
             <item
-                android:id="@+id/nav_load"
+                android:id="@+id/nav_saved"
                 android:icon="@drawable/ic_bookmark_border_black_24dp"
                 android:title="Saved" />
 
@@ -18,7 +18,7 @@
         <group android:id="@+id/settings">
 
             <item
-                android:id="@+id/nav_rewards"
+                android:id="@+id/nav_settings"
                 android:icon="@drawable/ic_settings_black_24dp"
                 android:title="Settings" />
 

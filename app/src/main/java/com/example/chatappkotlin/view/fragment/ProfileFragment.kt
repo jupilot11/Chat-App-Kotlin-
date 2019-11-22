@@ -4,12 +4,10 @@ package com.example.chatappkotlin.view.fragment
 import android.content.Context
 import android.content.res.Configuration
 import android.os.Bundle
-import android.view.Gravity
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.content.ContextCompat.getSystemService
 
@@ -48,10 +46,10 @@ class ProfileFragment : Fragment() {
 
         navigation_drawer_header =
             view.navigationView_main_menu?.inflateHeaderView(R.layout.navigation_drawer_header)
+        setupDrawerContent(view.navigationView_main_menu)
 
         actionBarDrawerToggle = setupDrawerToggle()
         view.drawer_layout.addDrawerListener(actionBarDrawerToggle!!)
-
 
         view.imageView3.setOnClickListener {
 
@@ -107,6 +105,37 @@ class ProfileFragment : Fragment() {
         super.onConfigurationChanged(newConfig)
         actionBarDrawerToggle!!.onConfigurationChanged(newConfig)
 
+    }
+
+
+    private fun setupDrawerContent(navigationView: NavigationView) {
+        navigationView.setNavigationItemSelectedListener { item ->
+            selectDrawerItem(item)
+            true
+        }
+    }
+
+
+    fun selectDrawerItem(menuItem: MenuItem) {
+        val fragment: Fragment? = null
+        val fragmentClass: Class<*>
+
+        menuItem.isChecked = false
+        when (menuItem.itemId) {
+
+            R.id.nav_saved ->{
+
+                Toast.makeText(activity,"wewe",Toast.LENGTH_SHORT).show()
+
+            }
+            R.id.nav_settings ->{
+                Toast.makeText(activity,"adasdas",Toast.LENGTH_SHORT).show()
+
+            }
+
+        }
+        menuItem.isChecked = true
+        drawer_layout.closeDrawers()
     }
 
 
