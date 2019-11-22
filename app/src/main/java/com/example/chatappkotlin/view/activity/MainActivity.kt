@@ -1,4 +1,4 @@
-package com.example.chatappkotlin.view
+package com.example.chatappkotlin.view.activity
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity

@@ -1,4 +1,4 @@
-package com.example.chatappkotlin.view
+package com.example.chatappkotlin.view.activity
 
 import android.app.Activity
 import android.content.ContentResolver
@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.provider.OpenableColumns
 import android.util.Log
-import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider.getUriForFile

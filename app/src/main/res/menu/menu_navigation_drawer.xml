@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <group android:checkableBehavior="single">
+
+
+        <group android:id="@+id/home">
+
+            <item
+                android:id="@+id/nav_load"
+                android:icon="@drawable/ic_bookmark_border_black_24dp"
+                android:title="Saved" />
+
+        </group>
+
+
+        <group android:id="@+id/settings">
+
+            <item
+                android:id="@+id/nav_rewards"
+                android:icon="@drawable/ic_settings_black_24dp"
+                android:title="Settings" />
+
+
+        </group>
+
+
+    </group>
+</menu>

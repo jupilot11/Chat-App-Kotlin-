@@ -1,4 +1,4 @@
-package com.example.chatappkotlin.view
+package com.example.chatappkotlin.view.activity
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -7,7 +7,6 @@ import android.view.View
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
-import androidx.core.app.NavUtils
 import com.example.chatappkotlin.R
 import com.example.chatappkotlin.User
 import com.example.chatappkotlin.presenter.LoginPresenter

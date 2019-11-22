@@ -1,4 +1,4 @@
-package com.example.chatappkotlin.view
+package com.example.chatappkotlin.view.activity
 
 import android.Manifest
 import android.app.Activity
@@ -22,7 +22,6 @@ import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import kotlinx.android.synthetic.main.activity_signup.*
-import android.os.Environment.getExternalStorageDirectory
 import android.net.Uri
 import android.provider.Settings
 import androidx.appcompat.app.AlertDialog
