@@ -24,9 +24,9 @@ class CircleImageview : ImageView {
         defStyle
     )
 
-    override fun onDraw(canvas: Canvas) {
-        drawRoundImage(canvas)
-        drawStroke(canvas)
+    override fun onDraw(canvas: Canvas?) {
+        drawRoundImage(canvas!!)
+        drawStroke(canvas!!)
     }
 
     private fun drawStroke(canvas: Canvas) {
@@ -63,5 +63,7 @@ class CircleImageview : ImageView {
         canvas.drawRoundRect(rect, width.toFloat(), height.toFloat(), imagePaint)
 
     }
+
+
 
 }

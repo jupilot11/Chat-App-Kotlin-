@@ -41,12 +41,14 @@
         android:textSize="18sp"
         android:textStyle="bold" />
 
-    <com.example.chatappkotlin.util.customview.CircleImageview
+    <com.example.chatappkotlin.util.customview.CircleImageView
         android:id="@+id/circleImageview"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_marginTop="5dp"
         android:src="@drawable/ic_person_black_48dp"
+        app:civ_border_color="@color/grey"
+        app:civ_border_width="2dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

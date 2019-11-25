@@ -1,19 +1,32 @@
 package com.example.chatappkotlin.view.fragment
 
 
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
 import com.example.chatappkotlin.R
 import com.example.chatappkotlin.UserSettings
 import com.example.chatappkotlin.util.Constants
 import com.example.chatappkotlin.util.RealtimeService
+import com.example.chatappkotlin.util.customview.CircleImageView
 import com.example.chatappkotlin.util.customview.CircleImageview
 import com.google.firebase.database.*
+import java.io.IOException
+import java.io.InputStream
+import java.net.HttpURLConnection
+import java.net.URL
 
 
 private const val ARG_PARAM1 = "param1"
@@ -21,16 +34,13 @@ private const val ARG_PARAM2 = "param2"
 
 
 class ProfileFragment : Fragment() {
+
+
     private var param1: String? = null
     private var param2: String? = null
     private var userSettings: UserSettings? = null
 
-    private var imageView: CircleImageview? = null
-    private var tv_followers: TextView? = null
-    private var tv_post: TextView? = null
-    private var tv_following: TextView? = null
-    private var tv_nickname: TextView? = null
-
+    private var realtimeReceiver: RealtimeReceiver? = null
     private var database: FirebaseDatabase? = null
     private var table_user: DatabaseReference? = null
 
@@ -61,14 +71,20 @@ class ProfileFragment : Fragment() {
         tv_nickname = view.findViewById(R.id.tv_nickname)
 
 
+
+
         tv_followers!!.text = userSettings!!.followers.toString()
         tv_post!!.text = userSettings!!.posts.toString()
         tv_following!!.text = userSettings!!.following.toString()
         tv_nickname!!.text = userSettings!!.str_display_name.toString()
 
 
-        return view
+        Glide.with(activity!!.applicationContext)
+            .load((userSettings!!.profile!!.arrayList!![0].uri))
+            .error(R.drawable.ic_person_black_48dp)
+            .into(imageView!!)
 
+        return view
 
 
     }
@@ -79,13 +95,34 @@ class ProfileFragment : Fragment() {
 
 
 //        realtimeCheck()
+        registerReceiver()
         getRealtime()
-
 
 
     }
 
-    fun getRealtime(){
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        unregisterReceiver()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        unregisterReceiver()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        unregisterReceiver()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        registerReceiver()
+    }
+
+    fun getRealtime() {
 
 
         val intent = Intent(activity, RealtimeService::class.java)
@@ -94,6 +131,13 @@ class ProfileFragment : Fragment() {
     }
 
     companion object {
+
+
+        var imageView: CircleImageView? = null
+        var tv_followers: TextView? = null
+        var tv_post: TextView? = null
+        var tv_following: TextView? = null
+        var tv_nickname: TextView? = null
 
         @JvmStatic
         fun newInstance(param1: UserSettings?, param2: String) =
@@ -104,8 +148,26 @@ class ProfileFragment : Fragment() {
                 }
             }
 
+
+
     }
 
+    private fun unregisterReceiver() {
+        if (realtimeReceiver != null) {
+            activity!!.unregisterReceiver(realtimeReceiver)
+            realtimeReceiver = null
+        }
+    }
+
+    private fun registerReceiver() {
+        if (realtimeReceiver == null) {
+            val intentFilterPHP =
+                IntentFilter(RealtimeReceiver.TAGGED_RECEIVER)
+            intentFilterPHP.addCategory(Intent.CATEGORY_DEFAULT)
+            realtimeReceiver = RealtimeReceiver()
+            activity!!.registerReceiver(realtimeReceiver, intentFilterPHP)
+        }
+    }
 
     private fun realtimeCheck() {
 
@@ -138,11 +200,6 @@ class ProfileFragment : Fragment() {
                             var nickname = datasnapshot1.child("str_display_name")
                                 .value.toString()
 
-
-                            tv_followers!!.text = followers
-                            tv_post!!.text = posts
-                            tv_following!!.text = following
-                            tv_nickname!!.text = nickname
                         }
                     }
 
@@ -153,5 +210,36 @@ class ProfileFragment : Fragment() {
 
         })
     }
+
+
+    class RealtimeReceiver : BroadcastReceiver() {
+
+        override fun onReceive(context: Context?, intent: Intent?) {
+
+            if (intent != null) {
+
+                val userSettings: UserSettings = intent.getParcelableExtra(Constants.INTENT_USER)
+
+                tv_followers!!.text = userSettings.followers.toString()
+                tv_post!!.text = userSettings.posts.toString()
+                tv_following!!.text = userSettings.following.toString()
+                tv_nickname!!.text = userSettings.str_display_name.toString()
+
+                Glide.with(context!!.applicationContext)
+                    .load((userSettings.profile!!.arrayList!![0].uri))
+                    .error(R.drawable.ic_person_black_48dp)
+                    .into(imageView!!)
+            }
+        }
+
+        companion object {
+
+            val TAGGED_RECEIVER =
+                "com.example.chatappkotlin.view.fragment.ProfileFragment"
+
+        }
+
+    }
+
 
 }

@@ -23,6 +23,7 @@ import com.example.chatappkotlin.util.Constants.Companion.INTENT_USER
 import com.example.chatappkotlin.view.fragment.HomeFragment
 import com.example.chatappkotlin.view.fragment.NotifactionFragment
 import com.example.chatappkotlin.view.fragment.ProfileFragment
+import com.example.chatappkotlin.view.fragment.UploadFragment
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.activity_home.*
@@ -37,6 +38,7 @@ class HomeActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener {
     var homeFragment: Fragment? = null
     var notifFragment: Fragment? = null
     var profileFragment: Fragment? = null
+    var uploadFragment: UploadFragment? = null
     private var actionBarDrawerToggle: ActionBarDrawerToggle? = null
     var navigation_drawer_header: View? = null
 
@@ -98,12 +100,19 @@ class HomeActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener {
 
             }
             1 -> {
+
+
+                Toast.makeText(this@HomeActivity, "Tab upload", Toast.LENGTH_SHORT)
+                    .show()
+
+            }
+            2 -> {
                 Toast.makeText(this@HomeActivity, "Tab 2 reselect", Toast.LENGTH_SHORT)
                     .show()
 
 
             }
-            2 -> {
+            3 -> {
                 Toast.makeText(this@HomeActivity, "Tab 3 reselect", Toast.LENGTH_SHORT)
                     .show()
 
@@ -130,7 +139,20 @@ class HomeActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener {
 
 
             }
+
             1 -> {
+
+                imageView3.visibility = View.GONE
+                drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+
+                uploadFragment = UploadFragment.newInstance("", "")
+                val ft = supportFragmentManager.beginTransaction()
+                ft.replace(R.id.framelayout, uploadFragment as UploadFragment, "")
+                ft.commit()
+
+
+            }
+            2 -> {
 
                 imageView3.visibility = View.VISIBLE
                 drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
@@ -142,7 +164,7 @@ class HomeActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener {
 
 
             }
-            2 -> {
+            3 -> {
 
                 imageView3.visibility = View.GONE
                 drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)

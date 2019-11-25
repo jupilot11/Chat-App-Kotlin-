@@ -320,9 +320,9 @@ class FirebaseMethods {
                                             .value.toString()
 
                                     var pic = ProfilePic(
+                                        cropper_uri,
                                         bool_profile,
-                                        orig_uri,
-                                        cropper_uri
+                                        orig_uri
                                     )
 
                                     arrayList!!.add(pic)

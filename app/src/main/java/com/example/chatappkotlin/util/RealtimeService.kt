@@ -2,71 +2,130 @@ package com.example.chatappkotlin.util
 
 import android.app.IntentService
 import android.content.Intent
+import android.os.Parcelable
+import com.example.chatappkotlin.Profile
+import com.example.chatappkotlin.ProfilePic
+import com.example.chatappkotlin.User
 import com.example.chatappkotlin.UserSettings
+import com.example.chatappkotlin.view.fragment.ProfileFragment
 import com.google.android.gms.common.internal.service.Common
 import com.google.firebase.database.*
 
-class RealtimeService : IntentService {
+class RealtimeService : IntentService("Realtime") {
 
 
     private var database: FirebaseDatabase? = null
     private var table_user: DatabaseReference? = null
-    private var userSettings : UserSettings? = null
-
-    constructor(name: String?) : super(name) {
-
-        database = FirebaseDatabase.getInstance()
-        table_user = database!!.reference.child("User Settings")
-
-    }
+    private var userSettings: UserSettings? = null
 
 
     override fun onHandleIntent(intent: Intent?) {
 
-        userSettings = intent!!.getParcelableExtra(Constants.INTENT_USER)
-
-        table_user!!.addValueEventListener(object : ValueEventListener {
-            override fun onCancelled(p0: DatabaseError) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
-
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-
-                if (dataSnapshot.childrenCount != 0L) {
-
-                    for (datasnapshot1 in dataSnapshot.children) {
-
-                        var id =
-                            datasnapshot1.child("str_id").value.toString()
+        if (intent != null) {
 
 
-                        if (userSettings!!.str_id.equals(id)) {
+            database = FirebaseDatabase.getInstance()
+            table_user = database!!.reference.child("User Settings")
+            var arrayList: ArrayList<ProfilePic>? = null
 
 
-                            var followers = datasnapshot1.child("followers")
-                                .value.toString()
-                            var posts =
-                                datasnapshot1.child("posts").value.toString()
+            userSettings = intent!!.getParcelableExtra(Constants.INTENT_USER)
 
-                            var following = datasnapshot1.child("following")
-                                .value.toString()
+            table_user!!.addValueEventListener(object : ValueEventListener {
+                override fun onCancelled(p0: DatabaseError) {
+                    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                }
 
-                            var nickname = datasnapshot1.child("str_display_name")
-                                .value.toString()
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+
+                    if (dataSnapshot.childrenCount != 0L) {
+
+                        for (datasnapshot1 in dataSnapshot.children) {
+
+                            var id = datasnapshot1.child("str_id").value.toString()
+
+                            if (userSettings!!.str_id.equals(id)) {
 
 
-//                            tv_followers!!.text = followers
-//                            tv_post!!.text = posts
-//                            tv_following!!.text = following
-//                            tv_nickname!!.text = nickname
+                                var followers = datasnapshot1.child("followers")
+                                    .value.toString()
+                                var posts =
+                                    datasnapshot1.child("posts").value.toString()
+
+                                var following = datasnapshot1.child("following")
+                                    .value.toString()
+
+                                var nickname = datasnapshot1.child("str_display_name")
+                                    .value.toString()
+
+
+
+                                for (datasnaphot3 in datasnapshot1.child("photos").children) {
+
+                                    arrayList = ArrayList()
+
+
+                                    for (i in 0 until datasnapshot1.child("photos").childrenCount) {
+
+                                        var bool_profile =
+                                            datasnaphot3.child("_profile")
+                                                .value.toString()
+                                        var orig_uri =
+                                            datasnaphot3.child("orig_uri")
+                                                .value.toString()
+                                        var cropper_uri =
+                                            datasnaphot3.child("uri")
+                                                .value.toString()
+
+                                        var pic = ProfilePic(
+                                            cropper_uri,
+                                            bool_profile,
+                                            orig_uri
+                                        )
+
+                                        arrayList!!.add(pic)
+                                    }
+
+                                    var profile = Profile(arrayList)
+
+
+                                    var userSetting = UserSettings(
+                                        userSettings!!.str_email,
+                                        userSettings!!.str_id,
+                                        userSettings!!.str_password,
+                                        userSettings!!.str_userId,
+                                        profile,
+                                        followers.toInt(),
+                                        following.toInt(),
+                                        posts.toInt(),
+                                        nickname
+                                    )
+
+
+                                    onRequestSuccess(userSetting)
+
+                                }
+                            }
+
                         }
                     }
 
-
                 }
 
-            }
+            })
+        }
 
-        })
     }
+
+    private fun onRequestSuccess(
+        userSettings: UserSettings
+    ) {
+        val broadcastIntent = Intent()
+        broadcastIntent.action = ProfileFragment.RealtimeReceiver.TAGGED_RECEIVER
+        broadcastIntent.addCategory(Intent.CATEGORY_DEFAULT)
+        broadcastIntent.putExtra(Constants.INTENT_USER, userSettings)
+        sendBroadcast(broadcastIntent)
+    }
+
+
 }

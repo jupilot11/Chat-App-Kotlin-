@@ -38,11 +38,13 @@
             android:layout_gravity="center">
 
 
-            <com.example.chatappkotlin.util.customview.CircleImageview
+            <com.example.chatappkotlin.util.customview.CircleImageView
                 android:id="@+id/circleImageview"
                 android:layout_width="150dp"
                 android:layout_height="150dp"
                 android:src="@drawable/ic_person_black_48dp"
+                app:civ_border_width="2dp"
+                app:civ_border_color="@color/grey"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
