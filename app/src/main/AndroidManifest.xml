@@ -47,6 +47,8 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
+        <service android:name=".util.RealtimeService" />
+
         <activity
             android:name=".util.customview.Ucrop.UCropActivity"
             android:screenOrientation="portrait" />

@@ -1,6 +1,7 @@
 package com.example.chatappkotlin.view.fragment
 
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,8 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.example.chatappkotlin.R
 import com.example.chatappkotlin.UserSettings
+import com.example.chatappkotlin.util.Constants
+import com.example.chatappkotlin.util.RealtimeService
 import com.example.chatappkotlin.util.customview.CircleImageview
 import com.google.firebase.database.*
 
@@ -65,6 +68,9 @@ class ProfileFragment : Fragment() {
 
 
         return view
+
+
+
     }
 
 
@@ -72,8 +78,19 @@ class ProfileFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
 
-        realtimeCheck()
+//        realtimeCheck()
+        getRealtime()
 
+
+
+    }
+
+    fun getRealtime(){
+
+
+        val intent = Intent(activity, RealtimeService::class.java)
+        intent.putExtra(Constants.INTENT_USER, userSettings)
+        activity!!.startService(intent)
     }
 
     companion object {
