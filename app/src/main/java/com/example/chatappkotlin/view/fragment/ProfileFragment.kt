@@ -99,38 +99,38 @@ class ProfileFragment : Fragment() {
 
             override fun onDataChange(dataSnapshot: DataSnapshot) {
 
-//                if (dataSnapshot.childrenCount != 0L) {
-//
-//                    for (datasnapshot1 in dataSnapshot.children) {
-//
-//                        var id =
-//                            datasnapshot1.child("str_id").value.toString()
-//
-//
-//                        if (userSettings!!.str_id.equals(id)) {
-//
-//
-//                            var followers = datasnapshot1.child("followers")
-//                                .value.toString()
-//                            var posts =
-//                                datasnapshot1.child("posts").value.toString()
-//
-//                            var following = datasnapshot1.child("following")
-//                                .value.toString()
-//
-//                            var nickname = datasnapshot1.child("str_display_name")
-//                                .value.toString()
-//
-//
-//                            tv_followers!!.text = followers
-//                            tv_post!!.text = posts
-//                            tv_following!!.text = following
-//                            tv_nickname!!.text = nickname
-//                        }
-//                    }
-//
-//
-//                }
+                if (dataSnapshot.childrenCount != 0L) {
+
+                    for (datasnapshot1 in dataSnapshot.children) {
+
+                        var id =
+                            datasnapshot1.child("str_id").value.toString()
+
+
+                        if (userSettings!!.str_id.equals(id)) {
+
+
+                            var followers = datasnapshot1.child("followers")
+                                .value.toString()
+                            var posts =
+                                datasnapshot1.child("posts").value.toString()
+
+                            var following = datasnapshot1.child("following")
+                                .value.toString()
+
+                            var nickname = datasnapshot1.child("str_display_name")
+                                .value.toString()
+
+
+                            tv_followers!!.text = followers
+                            tv_post!!.text = posts
+                            tv_following!!.text = following
+                            tv_nickname!!.text = nickname
+                        }
+                    }
+
+
+                }
 
             }
 

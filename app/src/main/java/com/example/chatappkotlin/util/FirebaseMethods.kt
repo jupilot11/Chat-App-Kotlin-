@@ -176,13 +176,15 @@ class FirebaseMethods {
         str_password: String,
         loginCallback: LoginCallback
     ) {
+
+
         valueEventListener2 = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 gotResult[0] = true
                 if (dataSnapshot.childrenCount != 0L) {
 
                     isEqual = false
-                    for (dataSnapshot1 in dataSnapshot.child("User").children) {
+                    for (dataSnapshot1 in dataSnapshot.children) {
 
                         val username = dataSnapshot1.child("str_email").value.toString()
 
@@ -209,133 +211,16 @@ class FirebaseMethods {
 
                     if (isEqual) {
 
-
                         valueEventListener2?.let {
                             databaseReference.child("User")
                                 .removeEventListener(it)
                         }
-
                         if (user?.str_password.equals(str_password)) {
 
 
-                            valueEventListener4 = object : ValueEventListener {
-                                override fun onCancelled(p0: DatabaseError) {
-                                    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-                                }
+                            databaseReference.child("User Settings")
+                                .addValueEventListener(valueEventListener4 as ValueEventListener)
 
-                                override fun onDataChange(dataSnapshot: DataSnapshot) {
-
-
-                                    if (dataSnapshot.childrenCount != 0L) {
-
-                                        isEquals = false
-
-                                        for (datasnaphot2 in dataSnapshot.child("User Settings").children) {
-
-                                            var id =
-                                                datasnaphot2.child("str_id").value.toString()
-
-                                            if (user!!.id.equals(id)) {
-
-
-                                                isEquals = true
-
-
-                                                var followers = datasnaphot2.child("followers")
-                                                    .value.toString()
-                                                var posts =
-                                                    datasnaphot2.child("posts").value.toString()
-                                                var following = datasnaphot2.child("following")
-                                                    .value.toString()
-                                                var nickname =
-                                                    datasnaphot2.child("str_display_name")
-                                                        .value.toString()
-
-                                                for (datasnaphot3 in datasnaphot2.child("photos").children) {
-
-
-                                                    arrayList = ArrayList()
-
-                                                    var users: User? = user
-
-
-                                                    for (i in 0 until datasnaphot2.child("photos").childrenCount) {
-
-                                                        var bool_profile =
-                                                            datasnaphot3.child("_profile")
-                                                                .value.toString()
-                                                        var orig_uri =
-                                                            datasnaphot3.child("orig_uri")
-                                                                .value.toString()
-                                                        var cropper_uri =
-                                                            datasnaphot3.child("uri")
-                                                                .value.toString()
-
-                                                        var pic = ProfilePic(
-                                                            bool_profile,
-                                                            orig_uri,
-                                                            cropper_uri
-                                                        )
-
-                                                        arrayList!!.add(pic)
-                                                    }
-
-                                                    var profile = Profile(arrayList)
-
-
-                                                    userSettings = UserSettings(
-                                                        user!!.str_email,
-                                                        user!!.id,
-                                                        user!!.str_password,
-                                                        user!!.str_userId,
-                                                        profile,
-                                                        followers.toInt(),
-                                                        following.toInt(),
-                                                        posts.toInt(),
-                                                        nickname
-                                                    )
-
-                                                    break
-
-                                                }
-
-
-                                            }
-                                        }
-
-
-                                        if (isEquals) {
-
-
-                                            valueEventListener4?.let {
-                                                databaseReference.child("User Settings")
-                                                    .removeEventListener(it)
-                                            }
-
-                                            loginCallback.onSuccess(userSettings!!)
-
-
-                                        }
-                                    }
-
-
-                                }
-
-                            }
-
-//                            databaseReference.child("User Settings")
-//                                .addValueEventListener(object : ValueEventListener {
-//                                    override fun onCancelled(p0: DatabaseError) {
-//                                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-//                                    }
-//
-//                                    override fun onDataChange(dataSnaphot: DataSnapshot) {
-//
-//
-//                                    }
-//
-//
-//                                })
 
                         } else {
 
@@ -343,11 +228,19 @@ class FirebaseMethods {
                             valueEventListener2?.let {
                                 databaseReference.child("User").removeEventListener(it)
                             }
+                            valueEventListener4?.let {
+                                databaseReference.child("User Settings")
+                                    .removeEventListener(it)
+                            }
                         }
                     } else {
                         loginCallback.onFailure()
                         valueEventListener2?.let {
                             databaseReference.child("User").removeEventListener(it)
+                        }
+                        valueEventListener4?.let {
+                            databaseReference.child("User Settings")
+                                .removeEventListener(it)
                         }
                     }
 
@@ -358,6 +251,10 @@ class FirebaseMethods {
                     valueEventListener2?.let {
                         databaseReference.child("User").removeEventListener(it)
                     }
+                    valueEventListener4?.let {
+                        databaseReference.child("User Settings")
+                            .removeEventListener(it)
+                    }
 
                 }
 
@@ -367,11 +264,121 @@ class FirebaseMethods {
 
             }
         }
-        databaseReference.addValueEventListener(valueEventListener2 as ValueEventListener)
+
+        valueEventListener4 = object : ValueEventListener {
+
+            override fun onCancelled(p0: DatabaseError) {
+                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
+
+            override fun onDataChange(dataSnaphot: DataSnapshot) {
+
+
+                if (dataSnaphot.childrenCount != 0L) {
+
+                    isEquals = false
+
+                    for (datasnaphot2 in dataSnaphot.children) {
+
+                        var id =
+                            datasnaphot2.child("str_id").value.toString()
+
+                        if (user!!.id.equals(id)) {
+
+
+                            isEquals = true
+
+
+                            var followers = datasnaphot2.child("followers")
+                                .value.toString()
+                            var posts =
+                                datasnaphot2.child("posts").value.toString()
+                            var following = datasnaphot2.child("following")
+                                .value.toString()
+                            var nickname =
+                                datasnaphot2.child("str_display_name")
+                                    .value.toString()
+
+                            for (datasnaphot3 in datasnaphot2.child("photos").children) {
+
+
+                                arrayList = ArrayList()
+
+                                var users: User? = user
+
+
+                                for (i in 0 until datasnaphot2.child("photos").childrenCount) {
+
+                                    var bool_profile =
+                                        datasnaphot3.child("_profile")
+                                            .value.toString()
+                                    var orig_uri =
+                                        datasnaphot3.child("orig_uri")
+                                            .value.toString()
+                                    var cropper_uri =
+                                        datasnaphot3.child("uri")
+                                            .value.toString()
+
+                                    var pic = ProfilePic(
+                                        bool_profile,
+                                        orig_uri,
+                                        cropper_uri
+                                    )
+
+                                    arrayList!!.add(pic)
+                                }
+
+                                var profile = Profile(arrayList)
+
+
+                                userSettings = UserSettings(
+                                    user!!.str_email,
+                                    user!!.id,
+                                    user!!.str_password,
+                                    user!!.str_userId,
+                                    profile,
+                                    followers.toInt(),
+                                    following.toInt(),
+                                    posts.toInt(),
+                                    nickname
+                                )
+
+                                break
+
+                            }
+
+
+                        }
+                    }
+
+                    if (isEquals) {
+
+                        valueEventListener4?.let {
+                            databaseReference.child("User Settings")
+                                .removeEventListener(it)
+                        }
+                        loginCallback.onSuccess(userSettings!!)
+
+
+                    }
+                }
+
+
+            }
+
+        }
+
+
+        databaseReference.child("User")
+            .addValueEventListener(valueEventListener2 as ValueEventListener)
+
         checkConnectionTimeout(object : ConnectionTimeoutCallback {
             override fun onConnectionTimeOut() {
                 loginCallback.onConnectionTimeOut()
-                databaseReference.removeEventListener(valueEventListener2 as ValueEventListener)
+                databaseReference.child("User")
+                    .removeEventListener(valueEventListener2 as ValueEventListener)
+                databaseReference.child("User Settings")
+                    .removeEventListener(valueEventListener4 as ValueEventListener)
             }
         })
     }
