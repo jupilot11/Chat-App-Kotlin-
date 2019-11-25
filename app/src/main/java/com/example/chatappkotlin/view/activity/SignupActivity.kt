@@ -25,6 +25,7 @@ import kotlinx.android.synthetic.main.activity_signup.*
 import android.net.Uri
 import android.provider.Settings
 import androidx.appcompat.app.AlertDialog
+import com.example.chatappkotlin.UserSettings
 import java.io.File
 
 
@@ -108,7 +109,7 @@ class SignupActivity : AppCompatActivity(), Contract.SignupActivityView, View.On
         tv_user_error.visibility = View.VISIBLE
     }
 
-    override fun onSuccess(user: User) {
+    override fun onSuccess(user: UserSettings) {
 
 
         Toast.makeText(this@SignupActivity, "Success pota", Toast.LENGTH_SHORT).show()

@@ -2,6 +2,7 @@ package com.example.chatappkotlin.model
 
 import com.example.chatappkotlin.util.FirebaseMethods
 import com.example.chatappkotlin.User
+import com.example.chatappkotlin.UserSettings
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
@@ -15,16 +16,15 @@ class LoginInteractor {
 
     constructor() {
         firebaseAuth = FirebaseAuth.getInstance()
-
         database = FirebaseDatabase.getInstance()
-        table_user = database!!.reference.child("User")
+        table_user = database!!.reference
         firebaseMethod = FirebaseMethods()
     }
 
 
     interface LoginInterface {
 
-        fun onSuccess(user: User)
+        fun onSuccess(userSettings: UserSettings)
 
         fun onFailure()
 
@@ -42,7 +42,6 @@ class LoginInteractor {
 
     fun login(username: String, password: String, loginInterface: LoginInterface) {
 
-
         loginInterface.onShowProgDialog()
 
         firebaseMethod?.firebaseLogin(
@@ -50,10 +49,10 @@ class LoginInteractor {
             username,
             password,
             object : FirebaseMethods.LoginCallback {
-                override fun onSuccess(user: User?) {
+                override fun onSuccess(userSettings: UserSettings) {
 
                     loginInterface.onDismissProgress()
-                    loginInterface.onSuccess(user!!)
+                    loginInterface.onSuccess(userSettings)
                 }
 
                 override fun onFailure() {
@@ -71,7 +70,7 @@ class LoginInteractor {
                 }
 
                 override fun onErrorPassword() {
-
+                    loginInterface.onDismissProgress()
                     loginInterface.onPasswordError()
                 }
 

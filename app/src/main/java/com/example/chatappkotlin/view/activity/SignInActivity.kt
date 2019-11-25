@@ -9,6 +9,7 @@ import android.widget.TextView
 import android.widget.Toast
 import com.example.chatappkotlin.R
 import com.example.chatappkotlin.User
+import com.example.chatappkotlin.UserSettings
 import com.example.chatappkotlin.presenter.LoginPresenter
 import com.example.chatappkotlin.util.Constants
 import com.example.chatappkotlin.util.Contract
@@ -88,7 +89,7 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener, Contract.Login
 
 
 
-    override fun onSuccess(user: User) {
+    override fun onSuccess(user: UserSettings) {
 
         val intent = Intent(this, HomeActivity::class.java)
         intent.putExtra(Constants.INTENT_USER, user)

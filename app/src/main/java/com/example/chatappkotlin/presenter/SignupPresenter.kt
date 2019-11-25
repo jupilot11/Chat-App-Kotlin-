@@ -4,6 +4,7 @@ import android.net.Uri
 import android.widget.EditText
 import android.widget.TextView
 import com.example.chatappkotlin.User
+import com.example.chatappkotlin.UserSettings
 import com.example.chatappkotlin.model.SignupInteractor
 import com.example.chatappkotlin.util.Contract
 
@@ -54,7 +55,7 @@ class SignupPresenter(signupActivityViews: Contract.SignupActivityView?) : Contr
         signupInteractor?.onHandleLoginIntent(this)
     }
 
-    override fun onSuccess(user: User) {
+    override fun onSuccess(user: UserSettings) {
 
         signupActivityView?.onSuccess(user)
     }

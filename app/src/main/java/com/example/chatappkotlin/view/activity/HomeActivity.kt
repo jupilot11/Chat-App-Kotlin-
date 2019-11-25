@@ -18,6 +18,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import com.example.chatappkotlin.R
 import com.example.chatappkotlin.User
+import com.example.chatappkotlin.UserSettings
 import com.example.chatappkotlin.util.Constants.Companion.INTENT_USER
 import com.example.chatappkotlin.view.fragment.HomeFragment
 import com.example.chatappkotlin.view.fragment.NotifactionFragment
@@ -32,7 +33,7 @@ import kotlinx.android.synthetic.main.fragment_profile.view.*
 class HomeActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener {
 
 
-    var user: User? = null
+    var user: UserSettings? = null
     var homeFragment: Fragment? = null
     var notifFragment: Fragment? = null
     var profileFragment: Fragment? = null
@@ -49,14 +50,11 @@ class HomeActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener {
 
         }
 
-        homeFragment = HomeFragment.newInstance("", "")
-        notifFragment = NotifactionFragment.newInstance("", "")
-        profileFragment = ProfileFragment.newInstance("", "")
-
 
         viewpagers = findViewById<ConstraintLayout>(R.id.viewpager)
         tabLayouts = findViewById<TabLayout>(R.id.tablayout)
 
+        homeFragment = HomeFragment.newInstance("", "")
 
         val ft = supportFragmentManager.beginTransaction()
         ft.replace(R.id.framelayout, homeFragment as HomeFragment, "")
@@ -125,7 +123,7 @@ class HomeActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener {
 
                 imageView3.visibility = View.GONE
                 drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
-
+                homeFragment = HomeFragment.newInstance("", "")
                 val ft = supportFragmentManager.beginTransaction()
                 ft.replace(R.id.framelayout, homeFragment as HomeFragment, "")
                 ft.commit()
@@ -137,7 +135,7 @@ class HomeActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener {
                 imageView3.visibility = View.VISIBLE
                 drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
 
-
+                profileFragment = ProfileFragment.newInstance(user!!, "")
                 val ft = supportFragmentManager.beginTransaction()
                 ft.replace(R.id.framelayout, profileFragment as ProfileFragment, "")
                 ft.commit()
@@ -149,7 +147,7 @@ class HomeActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener {
                 imageView3.visibility = View.GONE
                 drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
 
-
+                notifFragment = NotifactionFragment.newInstance(user!!, "")
                 val ft = supportFragmentManager.beginTransaction()
                 ft.replace(R.id.framelayout, notifFragment as NotifactionFragment, "")
                 ft.commit()

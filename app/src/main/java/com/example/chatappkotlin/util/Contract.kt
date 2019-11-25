@@ -4,11 +4,12 @@ import android.net.Uri
 import android.widget.EditText
 import android.widget.TextView
 import com.example.chatappkotlin.User
+import com.example.chatappkotlin.UserSettings
 
 interface Contract {
 
     interface LoginView {
-        fun onSuccess(user: User)
+        fun onSuccess(user: UserSettings)
 
         fun onEmpyFields(textViews: Array<TextView>, i: Int)
 
@@ -40,7 +41,7 @@ interface Contract {
 
     interface SignupActivityView {
 
-        fun onSuccess(user: User)
+        fun onSuccess(user: UserSettings)
 
         fun onEmpyFields(textViews: Array<TextView>, i: Int)
 

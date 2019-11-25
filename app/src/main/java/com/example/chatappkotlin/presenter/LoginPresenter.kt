@@ -3,7 +3,7 @@ package com.example.chatappkotlin.presenter
 import android.widget.EditText
 import android.widget.TextView
 import com.example.chatappkotlin.util.Contract
-import com.example.chatappkotlin.User
+import com.example.chatappkotlin.UserSettings
 import com.example.chatappkotlin.model.LoginInteractor
 
 class LoginPresenter : Contract.LoginContract, LoginInteractor.LoginInterface {
@@ -64,9 +64,9 @@ class LoginPresenter : Contract.LoginContract, LoginInteractor.LoginInterface {
         loginInteractor?.onSignupIntent(this)
     }
 
-    override fun onSuccess(user: User) {
+    override fun onSuccess(userSettings: UserSettings) {
 
-        loginView?.onSuccess(user)
+        loginView?.onSuccess(userSettings)
     }
 
     override fun onFailure() {
