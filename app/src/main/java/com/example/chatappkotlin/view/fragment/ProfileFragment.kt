@@ -22,6 +22,7 @@ import com.example.chatappkotlin.util.Constants
 import com.example.chatappkotlin.util.RealtimeService
 import com.example.chatappkotlin.util.customview.CircleImageView
 import com.example.chatappkotlin.util.customview.CircleImageview
+import com.example.chatappkotlin.view.activity.EditProfileActivity
 import com.google.firebase.database.*
 import java.io.IOException
 import java.io.InputStream
@@ -68,6 +69,15 @@ class ProfileFragment : Fragment() {
         tv_post = view.findViewById(R.id.tv_posts)
         tv_following = view.findViewById(R.id.tv_following)
         tv_nickname = view.findViewById(R.id.tv_nickname)
+        edit_profile = view.findViewById(R.id.tv_edit_profile)
+
+
+        edit_profile!!.setOnClickListener {
+
+
+            val intent = Intent(activity, EditProfileActivity::class.java)
+            activity!!.startActivity(intent)
+        }
 
 
 
@@ -137,6 +147,9 @@ class ProfileFragment : Fragment() {
         var tv_following: TextView? = null
         var tv_nickname: TextView? = null
         var userSettings: UserSettings? = null
+        var edit_profile : TextView? = null
+
+
         var type : Int? = null
 
         @JvmStatic
