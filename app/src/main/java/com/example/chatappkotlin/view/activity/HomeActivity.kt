@@ -1,6 +1,9 @@
 package com.example.chatappkotlin.view.activity
 
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.content.res.Configuration
 import android.opengl.Visibility
 import android.os.Bundle
@@ -14,16 +17,19 @@ import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.get
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
 import com.example.chatappkotlin.R
 import com.example.chatappkotlin.User
 import com.example.chatappkotlin.UserSettings
+import com.example.chatappkotlin.util.Constants
+import com.example.chatappkotlin.util.Constants.Companion.INTENT_TYPE
 import com.example.chatappkotlin.util.Constants.Companion.INTENT_USER
-import com.example.chatappkotlin.view.fragment.HomeFragment
-import com.example.chatappkotlin.view.fragment.NotifactionFragment
-import com.example.chatappkotlin.view.fragment.ProfileFragment
-import com.example.chatappkotlin.view.fragment.UploadFragment
+import com.example.chatappkotlin.util.RealtimeService
+import com.example.chatappkotlin.view.fragment.*
+import com.google.android.material.bottomnavigation.BottomNavigationMenu
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.activity_home.*
@@ -34,13 +40,15 @@ import kotlinx.android.synthetic.main.fragment_profile.view.*
 class HomeActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener {
 
 
-    var user: UserSettings? = null
     var homeFragment: Fragment? = null
     var notifFragment: Fragment? = null
     var profileFragment: Fragment? = null
     var uploadFragment: UploadFragment? = null
+    var searchFragment: SearchFragment? = null
     private var actionBarDrawerToggle: ActionBarDrawerToggle? = null
     var navigation_drawer_header: View? = null
+
+    var realtimeReceiver: RealtimeReceiver? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,12 +60,13 @@ class HomeActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener {
 
         }
 
+        registerReceiver()
+        getRealtime()
 
         viewpagers = findViewById<ConstraintLayout>(R.id.viewpager)
         tabLayouts = findViewById<TabLayout>(R.id.tablayout)
 
         homeFragment = HomeFragment.newInstance("", "")
-
         val ft = supportFragmentManager.beginTransaction()
         ft.replace(R.id.framelayout, homeFragment as HomeFragment, "")
         ft.commit()
@@ -73,10 +82,10 @@ class HomeActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener {
 
         tabLayouts.addOnTabSelectedListener(this)
 
+
         val badge = tabLayouts.getTabAt(2)?.orCreateBadge
         badge?.isVisible = true
         badge?.number = 9
-
 
 
         imageView3.visibility = View.GONE
@@ -89,6 +98,7 @@ class HomeActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener {
         }
 
     }
+
 
     override fun onTabReselected(tab: TabLayout.Tab?) {
         when (tab?.position) {
@@ -107,15 +117,19 @@ class HomeActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener {
 
             }
             2 -> {
-                Toast.makeText(this@HomeActivity, "Tab 2 reselect", Toast.LENGTH_SHORT)
-                    .show()
 
 
             }
             3 -> {
-                Toast.makeText(this@HomeActivity, "Tab 3 reselect", Toast.LENGTH_SHORT)
+
+                Toast.makeText(this@HomeActivity, "Tab 2 reselect", Toast.LENGTH_SHORT)
                     .show()
 
+            }
+            4 -> {
+
+                Toast.makeText(this@HomeActivity, "Tab 3 reselect", Toast.LENGTH_SHORT)
+                    .show()
 
             }
         }
@@ -145,6 +159,17 @@ class HomeActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener {
                 imageView3.visibility = View.GONE
                 drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
 
+                searchFragment = SearchFragment.newInstance("", "")
+                val ft = supportFragmentManager.beginTransaction()
+                ft.replace(R.id.framelayout, searchFragment as SearchFragment, "")
+                ft.commit()
+
+            }
+            2 -> {
+
+                imageView3.visibility = View.GONE
+                drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+
                 uploadFragment = UploadFragment.newInstance("", "")
                 val ft = supportFragmentManager.beginTransaction()
                 ft.replace(R.id.framelayout, uploadFragment as UploadFragment, "")
@@ -152,7 +177,7 @@ class HomeActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener {
 
 
             }
-            2 -> {
+            3 -> {
 
                 imageView3.visibility = View.VISIBLE
                 drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
@@ -162,9 +187,8 @@ class HomeActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener {
                 ft.replace(R.id.framelayout, profileFragment as ProfileFragment, "")
                 ft.commit()
 
-
             }
-            3 -> {
+            4 -> {
 
                 imageView3.visibility = View.GONE
                 drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
@@ -183,8 +207,11 @@ class HomeActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener {
 
         var viewpagers: ConstraintLayout? = null
         lateinit var tabLayouts: TabLayout
-    }
 
+        var user: UserSettings? = null
+        var type: Int? = null
+        var bottomNavigationMenu : BottomNavigationMenu? = null
+    }
 
     private fun setupDrawerToggle(): ActionBarDrawerToggle {
         return object : ActionBarDrawerToggle(
@@ -215,6 +242,15 @@ class HomeActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener {
         }
     }
 
+
+    fun getRealtime() {
+
+
+        val intent = Intent(this, RealtimeService::class.java)
+        intent.putExtra(INTENT_USER, user)
+        intent.putExtra(INTENT_TYPE, 1)
+        startService(intent)
+    }
 
     private fun setupDrawerContent(navigationView: NavigationView) {
         navigationView.setNavigationItemSelectedListener { item ->
@@ -259,4 +295,60 @@ class HomeActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener {
         actionBarDrawerToggle!!.syncState()
 
     }
+
+
+    override fun onPause() {
+        super.onPause()
+        registerReceiver()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        unregisterReceiver()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        registerReceiver()
+    }
+
+    private fun unregisterReceiver() {
+        if (realtimeReceiver != null) {
+            unregisterReceiver(realtimeReceiver)
+            realtimeReceiver = null
+        }
+    }
+
+    private fun registerReceiver() {
+        if (realtimeReceiver == null) {
+            val intentFilterPHP =
+                IntentFilter(RealtimeReceiver.TAGGED_RECEIVER)
+            intentFilterPHP.addCategory(Intent.CATEGORY_DEFAULT)
+            realtimeReceiver = RealtimeReceiver()
+            registerReceiver(realtimeReceiver, intentFilterPHP)
+        }
+    }
+
+    class RealtimeReceiver : BroadcastReceiver() {
+
+        override fun onReceive(context: Context?, intent: Intent?) {
+
+            if (intent != null) {
+
+                user = intent.getParcelableExtra(INTENT_USER)
+
+
+            }
+        }
+
+        companion object {
+
+            val TAGGED_RECEIVER =
+                "com.example.chatappkotlin.view.fragment.ProfileFragment"
+
+        }
+
+    }
+
+
 }

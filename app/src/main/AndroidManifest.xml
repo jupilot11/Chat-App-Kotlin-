@@ -15,8 +15,10 @@
         android:roundIcon="@drawable/ic_instagram"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".view.activity.HomeActivity"
-            android:screenOrientation="portrait"/>
+        <activity android:name=".view.activity.EditProfileActivity"></activity>
+        <activity
+            android:name=".view.activity.HomeActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".view.activity.ImagePickerActivity"
             android:label="@string/title_activity_image_picker"

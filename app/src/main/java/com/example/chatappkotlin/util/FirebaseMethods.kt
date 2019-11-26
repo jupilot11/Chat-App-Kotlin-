@@ -95,7 +95,7 @@ class FirebaseMethods {
             }
         }
         val pdCanceller = Handler()
-        pdCanceller.postDelayed(progressRunnable, 120000)
+        pdCanceller.postDelayed(progressRunnable, 30000)
     }
 
 
@@ -352,7 +352,6 @@ class FirebaseMethods {
                     }
 
                     if (isEquals) {
-
                         valueEventListener4?.let {
                             databaseReference.child("User Settings")
                                 .removeEventListener(it)

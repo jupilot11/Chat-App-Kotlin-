@@ -7,6 +7,7 @@ import com.example.chatappkotlin.Profile
 import com.example.chatappkotlin.ProfilePic
 import com.example.chatappkotlin.User
 import com.example.chatappkotlin.UserSettings
+import com.example.chatappkotlin.view.activity.HomeActivity
 import com.example.chatappkotlin.view.fragment.ProfileFragment
 import com.google.android.gms.common.internal.service.Common
 import com.google.firebase.database.*
@@ -17,7 +18,7 @@ class RealtimeService : IntentService("Realtime") {
     private var database: FirebaseDatabase? = null
     private var table_user: DatabaseReference? = null
     private var userSettings: UserSettings? = null
-
+    private var type: Int? = null
 
     override fun onHandleIntent(intent: Intent?) {
 
@@ -28,8 +29,8 @@ class RealtimeService : IntentService("Realtime") {
             table_user = database!!.reference.child("User Settings")
             var arrayList: ArrayList<ProfilePic>? = null
 
-
-            userSettings = intent!!.getParcelableExtra(Constants.INTENT_USER)
+            userSettings = intent.getParcelableExtra(Constants.INTENT_USER)
+            type = intent.getIntExtra(Constants.INTENT_TYPE, 0)
 
             table_user!!.addValueEventListener(object : ValueEventListener {
                 override fun onCancelled(p0: DatabaseError) {
@@ -120,11 +121,24 @@ class RealtimeService : IntentService("Realtime") {
     private fun onRequestSuccess(
         userSettings: UserSettings
     ) {
-        val broadcastIntent = Intent()
-        broadcastIntent.action = ProfileFragment.RealtimeReceiver.TAGGED_RECEIVER
-        broadcastIntent.addCategory(Intent.CATEGORY_DEFAULT)
-        broadcastIntent.putExtra(Constants.INTENT_USER, userSettings)
-        sendBroadcast(broadcastIntent)
+        if (type == 1) {
+
+            val broadcastIntent = Intent()
+            broadcastIntent.action = HomeActivity.RealtimeReceiver.TAGGED_RECEIVER
+            broadcastIntent.addCategory(Intent.CATEGORY_DEFAULT)
+            broadcastIntent.putExtra(Constants.INTENT_USER, userSettings)
+            sendBroadcast(broadcastIntent)
+
+        }else if (type == 0){
+
+            val broadcastIntent = Intent()
+            broadcastIntent.action = ProfileFragment.RealtimeReceiver.TAGGED_RECEIVER
+            broadcastIntent.addCategory(Intent.CATEGORY_DEFAULT)
+            broadcastIntent.putExtra(Constants.INTENT_USER, userSettings)
+            sendBroadcast(broadcastIntent)
+
+        }
+
     }
 
 

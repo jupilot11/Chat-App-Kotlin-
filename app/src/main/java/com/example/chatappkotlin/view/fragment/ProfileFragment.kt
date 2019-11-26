@@ -38,7 +38,6 @@ class ProfileFragment : Fragment() {
 
     private var param1: String? = null
     private var param2: String? = null
-    private var userSettings: UserSettings? = null
 
     private var realtimeReceiver: RealtimeReceiver? = null
     private var database: FirebaseDatabase? = null
@@ -93,8 +92,6 @@ class ProfileFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-
-//        realtimeCheck()
         registerReceiver()
         getRealtime()
 
@@ -127,6 +124,7 @@ class ProfileFragment : Fragment() {
 
         val intent = Intent(activity, RealtimeService::class.java)
         intent.putExtra(Constants.INTENT_USER, userSettings)
+        intent.putExtra(Constants.INTENT_TYPE, 0)
         activity!!.startService(intent)
     }
 
@@ -138,6 +136,8 @@ class ProfileFragment : Fragment() {
         var tv_post: TextView? = null
         var tv_following: TextView? = null
         var tv_nickname: TextView? = null
+        var userSettings: UserSettings? = null
+        var type : Int? = null
 
         @JvmStatic
         fun newInstance(param1: UserSettings?, param2: String) =
@@ -169,64 +169,21 @@ class ProfileFragment : Fragment() {
         }
     }
 
-    private fun realtimeCheck() {
-
-        table_user!!.addValueEventListener(object : ValueEventListener {
-            override fun onCancelled(p0: DatabaseError) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
-
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-
-                if (dataSnapshot.childrenCount != 0L) {
-
-                    for (datasnapshot1 in dataSnapshot.children) {
-
-                        var id =
-                            datasnapshot1.child("str_id").value.toString()
-
-
-                        if (userSettings!!.str_id.equals(id)) {
-
-
-                            var followers = datasnapshot1.child("followers")
-                                .value.toString()
-                            var posts =
-                                datasnapshot1.child("posts").value.toString()
-
-                            var following = datasnapshot1.child("following")
-                                .value.toString()
-
-                            var nickname = datasnapshot1.child("str_display_name")
-                                .value.toString()
-
-                        }
-                    }
-
-
-                }
-
-            }
-
-        })
-    }
-
-
     class RealtimeReceiver : BroadcastReceiver() {
 
         override fun onReceive(context: Context?, intent: Intent?) {
 
             if (intent != null) {
 
-                val userSettings: UserSettings = intent.getParcelableExtra(Constants.INTENT_USER)
+                userSettings = intent.getParcelableExtra(Constants.INTENT_USER)
 
-                tv_followers!!.text = userSettings.followers.toString()
-                tv_post!!.text = userSettings.posts.toString()
-                tv_following!!.text = userSettings.following.toString()
-                tv_nickname!!.text = userSettings.str_display_name.toString()
+                tv_followers!!.text = userSettings!!.followers.toString()
+                tv_post!!.text = userSettings!!.posts.toString()
+                tv_following!!.text = userSettings!!.following.toString()
+                tv_nickname!!.text = userSettings!!.str_display_name.toString()
 
                 Glide.with(context!!.applicationContext)
-                    .load((userSettings.profile!!.arrayList!![0].uri))
+                    .load((userSettings!!.profile!!.arrayList!![0].uri))
                     .error(R.drawable.ic_person_black_48dp)
                     .into(imageView!!)
             }
