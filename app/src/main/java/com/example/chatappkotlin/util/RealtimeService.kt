@@ -56,8 +56,14 @@ class RealtimeService : IntentService("Realtime") {
                                 var following = datasnapshot1.child("following")
                                     .value.toString()
 
-                                var nickname = datasnapshot1.child("str_display_name")
+                                var nickname = datasnapshot1.child("str_nickname")
                                     .value.toString()
+
+                                var fullname =
+                                    datasnapshot1.child("str_display_name").value.toString()
+
+                                var str_phone =
+                                    datasnapshot1.child("str_phone").value.toString()
 
 
 
@@ -99,8 +105,12 @@ class RealtimeService : IntentService("Realtime") {
                                         followers.toInt(),
                                         following.toInt(),
                                         posts.toInt(),
-                                        nickname
+                                        fullname,
+                                        nickname,
+                                        str_phone
                                     )
+
+
 
 
                                     onRequestSuccess(userSetting)
@@ -129,7 +139,7 @@ class RealtimeService : IntentService("Realtime") {
             broadcastIntent.putExtra(Constants.INTENT_USER, userSettings)
             sendBroadcast(broadcastIntent)
 
-        }else if (type == 0){
+        } else if (type == 0) {
 
             val broadcastIntent = Intent()
             broadcastIntent.action = ProfileFragment.RealtimeReceiver.TAGGED_RECEIVER

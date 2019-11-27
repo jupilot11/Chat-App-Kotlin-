@@ -5,26 +5,20 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.res.Configuration
-import android.opengl.Visibility
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.view.Gravity
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.get
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
-import com.bumptech.glide.Glide
 import com.example.chatappkotlin.R
-import com.example.chatappkotlin.User
 import com.example.chatappkotlin.UserSettings
-import com.example.chatappkotlin.util.Constants
 import com.example.chatappkotlin.util.Constants.Companion.INTENT_TYPE
 import com.example.chatappkotlin.util.Constants.Companion.INTENT_USER
 import com.example.chatappkotlin.util.RealtimeService
@@ -33,8 +27,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationMenu
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.activity_home.*
-import kotlinx.android.synthetic.main.fragment_profile.*
-import kotlinx.android.synthetic.main.fragment_profile.view.*
 
 
 class HomeActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener {
@@ -46,7 +38,7 @@ class HomeActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener {
     var uploadFragment: UploadFragment? = null
     var searchFragment: SearchFragment? = null
     private var actionBarDrawerToggle: ActionBarDrawerToggle? = null
-    var navigation_drawer_header: View? = null
+    private var navigationDrawerHeader: View? = null
 
     var realtimeReceiver: RealtimeReceiver? = null
 
@@ -72,7 +64,7 @@ class HomeActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener {
         ft.commit()
 
 
-        navigation_drawer_header =
+        navigationDrawerHeader =
             navigationView_main_menu.inflateHeaderView(R.layout.navigation_drawer_header)
 
         setupDrawerContent(navigationView_main_menu)
@@ -83,7 +75,7 @@ class HomeActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener {
         tabLayouts.addOnTabSelectedListener(this)
 
 
-        val badge = tabLayouts.getTabAt(2)?.orCreateBadge
+        val badge = tabLayouts.getTabAt(3)?.orCreateBadge
         badge?.isVisible = true
         badge?.number = 9
 
@@ -105,15 +97,11 @@ class HomeActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener {
 
             0 -> {
 
-                Toast.makeText(this@HomeActivity, "Tab 1 reselect", Toast.LENGTH_SHORT)
-                    .show()
 
             }
             1 -> {
 
 
-                Toast.makeText(this@HomeActivity, "Tab upload", Toast.LENGTH_SHORT)
-                    .show()
 
             }
             2 -> {
@@ -122,14 +110,10 @@ class HomeActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener {
             }
             3 -> {
 
-                Toast.makeText(this@HomeActivity, "Tab 2 reselect", Toast.LENGTH_SHORT)
-                    .show()
 
             }
             4 -> {
 
-                Toast.makeText(this@HomeActivity, "Tab 3 reselect", Toast.LENGTH_SHORT)
-                    .show()
 
             }
         }

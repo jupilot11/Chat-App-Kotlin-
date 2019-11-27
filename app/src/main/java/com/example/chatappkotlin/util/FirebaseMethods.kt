@@ -198,8 +198,10 @@ class FirebaseMethods {
                             var name = dataSnapshot1.child("str_username").value.toString()
                             var password = dataSnapshot1.child("str_password").value.toString()
                             var id = dataSnapshot1.child("id").value.toString()
+                            var str_nickname = dataSnapshot.child("str_nikname").toString()
+                            var str_phone = dataSnapshot.child("str_phone").toString()
 
-                            user = User(email, name, password, userid, id)
+                            user = User(email, name, password, userid, id, str_nickname, str_phone)
 
 
                             break
@@ -295,8 +297,14 @@ class FirebaseMethods {
                                 datasnaphot2.child("posts").value.toString()
                             var following = datasnaphot2.child("following")
                                 .value.toString()
-                            var nickname =
+                            var fullname =
                                 datasnaphot2.child("str_display_name")
+                                    .value.toString()
+                            var nickname =
+                                datasnaphot2.child("str_nickname")
+                                    .value.toString()
+                            var str_phone =
+                                datasnaphot2.child("str_phone")
                                     .value.toString()
 
                             for (datasnaphot3 in datasnaphot2.child("photos").children) {
@@ -340,7 +348,9 @@ class FirebaseMethods {
                                     followers.toInt(),
                                     following.toInt(),
                                     posts.toInt(),
-                                    nickname
+                                    fullname,
+                                    nickname,
+                                    str_phone
                                 )
 
                                 break

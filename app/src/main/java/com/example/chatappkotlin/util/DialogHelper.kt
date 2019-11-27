@@ -14,8 +14,11 @@ class DialogHelper {
 
     private var progressDialog: ProgressDialog? = null
     private lateinit var dialog: Dialog
+    private lateinit var unsave_dialog: Dialog
     private var tv_camera: TextView? = null
     private var tv_gallery: TextView? = null
+    private var tv_no: TextView? = null
+    private var tv_yes: TextView? = null
 
     fun showProgressDialog(context: Context?, strMessage: String, isCancellable: Boolean) {
         if (context != null) {
@@ -33,6 +36,36 @@ class DialogHelper {
 
         progressDialog?.dismiss()
 
+    }
+
+    fun showUnsavedDialog(context: Context?, dialogUnsavedCallback: DialogUnsavedCallback) {
+
+        if (context != null) {
+
+            unsave_dialog = Dialog(context)
+            unsave_dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+            unsave_dialog.setContentView(R.layout.unsaved_layout)
+            unsave_dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            unsave_dialog.window!!.attributes.windowAnimations = R.style.DialogAnimation
+            unsave_dialog.setCancelable(true)
+
+            tv_yes = unsave_dialog.findViewById(R.id.tv_yes)
+            tv_no = unsave_dialog.findViewById(R.id.tv_no)
+
+            tv_yes?.setOnClickListener {
+
+
+                dialogUnsavedCallback.onYes()
+            }
+
+            tv_no?.setOnClickListener {
+
+                dialogUnsavedCallback.onNo()
+            }
+
+
+            unsave_dialog.show()
+        }
     }
 
     fun showUploadDialog(context: Context?, dialogUploadCallback: DialogUploadCallback) {
@@ -65,7 +98,7 @@ class DialogHelper {
         }
     }
 
-    fun dismissUploadDialog(){
+    fun dismissUploadDialog() {
 
 
         dialog.dismiss()
@@ -78,6 +111,19 @@ class DialogHelper {
 
         fun onSelectGallery()
 
+    }
+
+    interface DialogUnsavedCallback {
+
+        fun onYes()
+
+        fun onNo()
+
+    }
+
+    fun dismissUnsavedDialog() {
+
+        unsave_dialog.dismiss()
     }
 
 }

@@ -76,6 +76,7 @@ class ProfileFragment : Fragment() {
 
 
             val intent = Intent(activity, EditProfileActivity::class.java)
+            intent.putExtra(Constants.INTENT_USER, userSettings)
             activity!!.startActivity(intent)
         }
 
@@ -85,7 +86,7 @@ class ProfileFragment : Fragment() {
         tv_followers!!.text = userSettings!!.followers.toString()
         tv_post!!.text = userSettings!!.posts.toString()
         tv_following!!.text = userSettings!!.following.toString()
-        tv_nickname!!.text = userSettings!!.str_display_name.toString()
+        tv_nickname!!.text = userSettings!!.str_nickname.toString()
 
 
         Glide.with(activity!!.applicationContext)
@@ -144,6 +145,7 @@ class ProfileFragment : Fragment() {
         var imageView: CircleImageView? = null
         var tv_followers: TextView? = null
         var tv_post: TextView? = null
+
         var tv_following: TextView? = null
         var tv_nickname: TextView? = null
         var userSettings: UserSettings? = null
@@ -193,7 +195,7 @@ class ProfileFragment : Fragment() {
                 tv_followers!!.text = userSettings!!.followers.toString()
                 tv_post!!.text = userSettings!!.posts.toString()
                 tv_following!!.text = userSettings!!.following.toString()
-                tv_nickname!!.text = userSettings!!.str_display_name.toString()
+                tv_nickname!!.text = userSettings!!.str_nickname.toString()
 
                 Glide.with(context!!.applicationContext)
                     .load((userSettings!!.profile!!.arrayList!![0].uri))

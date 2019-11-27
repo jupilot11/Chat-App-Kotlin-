@@ -40,10 +40,12 @@ class SignupActivity : AppCompatActivity(), Contract.SignupActivityView, View.On
     private var str_username = ""
     private var str_password = ""
     private var str_email = ""
+    private var str_nikname = ""
+    private var str_phone = ""
     private var dialogHelper: DialogHelper? = null
     val REQUEST_IMAGE = 100
     val VIEW_IMAGE = 110
-    var uriArrayList : ArrayList<Uri>? = null
+    var uriArrayList: ArrayList<Uri>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -82,11 +84,11 @@ class SignupActivity : AppCompatActivity(), Contract.SignupActivityView, View.On
             tv_email.visibility = View.VISIBLE
             tv_email.text = message
 
-        } else if (type == 3){
+        } else if (type == 3) {
 
             Toast.makeText(this@SignupActivity, message, Toast.LENGTH_SHORT).show()
 
-        } else{
+        } else {
             tv_user_error.visibility = View.VISIBLE
 
         }
@@ -129,15 +131,27 @@ class SignupActivity : AppCompatActivity(), Contract.SignupActivityView, View.On
                 str_email = et_email.text.toString()
                 str_password = et_password.text.toString()
                 str_username = et_username.text.toString()
+                str_nikname = et_nickname.text.toString()
+                str_phone = et_phone.text.toString()
 
-                val editTexts = arrayOf<EditText>(et_email, et_username, et_password)
-                val textViews = arrayOf<TextView>(tv_email, tv_user_error, tv_pass_error)
+                val editTexts =
+                    arrayOf<EditText>(et_email, et_username, et_nickname, et_phone, et_password)
+                val textViews =
+                    arrayOf<TextView>(
+                        tv_email,
+                        tv_user_error,
+                        tv_nickname_error,
+                        tv_phone_error,
+                        tv_pass_error
+                    )
 
                 var user = User(
                     str_email,
                     str_username,
                     str_password,
-                    "ID" + System.currentTimeMillis()
+                    "ID" + System.currentTimeMillis(), "",
+                    str_nikname,
+                    str_phone
                 )
 
                 if (uriArrayList != null) {
@@ -274,6 +288,32 @@ class SignupActivity : AppCompatActivity(), Contract.SignupActivityView, View.On
                     override fun onTextChanged() {
 
                         tv_email.visibility = View.GONE
+                    }
+
+                }
+            )
+        )
+        et_nickname.addTextChangedListener(
+            TextWatcherHelper(
+                et_nickname,
+                this@SignupActivity,
+                object : TextWatcherHelper.OnTextChangedCallbacks {
+                    override fun onTextChanged() {
+
+                        tv_nickname_error.visibility = View.GONE
+                    }
+
+                }
+            )
+        )
+        et_phone.addTextChangedListener(
+            TextWatcherHelper(
+                et_phone,
+                this@SignupActivity,
+                object : TextWatcherHelper.OnTextChangedCallbacks {
+                    override fun onTextChanged() {
+
+                        tv_phone_error.visibility = View.GONE
                     }
 
                 }

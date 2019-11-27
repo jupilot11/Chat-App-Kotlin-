@@ -21,165 +21,241 @@
     </LinearLayout>
 
 
-    <LinearLayout
-        android:layout_width="350dp"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="vertical"
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/container_toolbar">
 
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="350dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center">
+            android:layout_gravity="center|top"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/container_toolbar">
 
 
-            <com.example.chatappkotlin.util.customview.CircleImageView
-                android:id="@+id/circleImageview"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
-                android:src="@drawable/ic_person_black_48dp"
-                app:civ_border_width="2dp"
-                app:civ_border_color="@color/grey"
-                app:layout_constraintBottom_toBottomOf="parent"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center">
+
+
+                <com.example.chatappkotlin.util.customview.CircleImageView
+                    android:id="@+id/circleImageview"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:src="@drawable/ic_person_black_48dp"
+                    app:civ_border_color="@color/grey"
+                    app:civ_border_width="2dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/img_profile_change"
+                    android:layout_width="40dp"
+                    android:layout_height="30dp"
+                    android:layout_marginEnd="4dp"
+                    android:layout_marginBottom="4dp"
+                    android:background="@drawable/rounded_corners"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:padding="5dp"
+
+                    android:src="@drawable/ic_photo_camera_black_36dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/circleImageview"
+                    app:layout_constraintEnd_toEndOf="@+id/circleImageview" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            <EditText
+                android:id="@+id/et_email"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginEnd="15dp"
+                android:background="@drawable/edittext_background"
+                android:hint="Email address"
+                android:inputType="textEmailAddress"
+                android:padding="10dp"
+                android:text=""
+                android:textSize="@dimen/text_large"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toBottomOf="@+id/circleImageview" />
 
-            <ImageView
-                android:id="@+id/img_profile_change"
-                android:layout_width="40dp"
-                android:layout_height="30dp"
-                android:layout_marginEnd="4dp"
-                android:layout_marginBottom="4dp"
-                android:background="@drawable/rounded_corners"
-                android:clickable="true"
+            <TextView
+                android:id="@+id/tv_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:padding="10dp"
+                android:text="Value is incorrect"
+                android:textColor="@color/color_red"
+                android:textSize="12sp"
+                android:visibility="gone" />
+
+            <EditText
+                android:id="@+id/et_username"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="15dp"
+                android:background="@drawable/edittext_background"
                 android:focusable="true"
-                android:padding="5dp"
+                android:hint="Full name"
+                android:inputType="textCapWords"
+                android:maxLength="16"
+                android:padding="10dp"
+                android:text=""
+                android:textSize="15dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
 
-                android:src="@drawable/ic_photo_camera_black_36dp"
-                app:layout_constraintBottom_toBottomOf="@+id/circleImageview"
-                app:layout_constraintEnd_toEndOf="@+id/circleImageview" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-        <EditText
-            android:id="@+id/et_email"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginStart="15dp"
-            android:layout_marginTop="15dp"
-            android:layout_marginEnd="15dp"
-            android:background="@drawable/edittext_background"
-            android:hint="Email address"
-            android:inputType="textEmailAddress"
-            android:padding="10dp"
-            android:text=""
-            android:textSize="@dimen/text_large"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/circleImageview" />
-
-        <TextView
-            android:id="@+id/tv_email"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
-            android:padding="10dp"
-            android:text="Value is incorrect"
-            android:textColor="@color/color_red"
-            android:textSize="12sp"
-            android:visibility="gone" />
-
-        <EditText
-            android:id="@+id/et_username"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginStart="15dp"
-
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="15dp"
-            android:background="@drawable/edittext_background"
-            android:focusable="true"
-            android:hint="Full name"
-            android:inputType="textCapWords"
-            android:maxLength="16"
-            android:padding="10dp"
-            android:text="" />
-
-        <TextView
-            android:id="@+id/tv_user_error"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
-            android:padding="10dp"
-            android:text="Value is incorrect"
-            android:textColor="@color/color_red"
-            android:textSize="12sp"
-            android:visibility="gone" />
+            <TextView
+                android:id="@+id/tv_user_error"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:padding="10dp"
+                android:text="Value is incorrect"
+                android:textColor="@color/color_red"
+                android:textSize="12sp"
+                android:visibility="gone" />
 
 
-        <EditText
-            android:id="@+id/et_password"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginStart="15dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="15dp"
-            android:background="@drawable/edittext_background"
-            android:focusable="true"
-            android:hint="Password"
-            android:inputType="textPassword"
-            android:maxLength="16"
-            android:padding="10dp"
-            android:text=""
-            android:textSize="@dimen/text_large"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_user_error" />
+            <EditText
+                android:id="@+id/et_nickname"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="15dp"
+                android:background="@drawable/edittext_background"
+                android:focusable="true"
+                android:hint="Nickname"
+                android:inputType="textCapWords"
+                android:maxLength="16"
+                android:padding="10dp"
+                android:text=""
+                android:textSize="15dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
 
-        <TextView
-            android:id="@+id/tv_pass_error"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
-            android:padding="10dp"
-            android:text="Value is incorrect"
-            android:textColor="@color/color_red"
-            android:textSize="12sp"
-            android:visibility="gone" />
+            <TextView
+                android:id="@+id/tv_nickname_error"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:padding="10dp"
+                android:text="Value is incorrect"
+                android:textColor="@color/color_red"
+                android:textSize="12sp"
+                android:visibility="gone" />
 
 
-        <Button
-            android:id="@+id/btn_signup"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginTop="15dp"
-            android:layout_marginRight="15dp"
-            android:background="@drawable/btn_signin_bg"
-            android:text="Sign up"
-            android:textAllCaps="false"
-            android:textColor="@color/white"
-            android:textSize="@dimen/text_large"
-            app:layout_constraintEnd_toEndOf="@+id/et_password"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/et_password"
-            app:layout_constraintTop_toBottomOf="@+id/tv_pass_error" />
+
+            <EditText
+                android:id="@+id/et_phone"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="15dp"
+                android:background="@drawable/edittext_background"
+                android:focusable="true"
+                android:hint="Phone"
+                android:inputType="number"
+                android:maxLength="16"
+                android:padding="10dp"
+                android:text=""
+                android:textSize="15dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_phone_error"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:padding="10dp"
+                android:text="Value is incorrect"
+                android:textColor="@color/color_red"
+                android:textSize="12sp"
+                android:visibility="gone" />
 
 
-    </LinearLayout>
+            <EditText
+                android:id="@+id/et_password"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="15dp"
+                android:background="@drawable/edittext_background"
+                android:focusable="true"
+                android:hint="Password"
+                android:inputType="textPassword"
+                android:maxLength="16"
+                android:padding="10dp"
+                android:text=""
+                android:textSize="@dimen/text_large"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_user_error" />
 
+            <TextView
+                android:id="@+id/tv_pass_error"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:padding="10dp"
+                android:text="Value is incorrect"
+                android:textColor="@color/color_red"
+                android:textSize="12sp"
+                android:visibility="gone" />
+
+
+            <Button
+                android:id="@+id/btn_signup"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginRight="15dp"
+                android:background="@drawable/btn_signin_bg"
+                android:text="Sign up"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_large"
+                app:layout_constraintEnd_toEndOf="@+id/et_password"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/et_password"
+                app:layout_constraintTop_toBottomOf="@+id/tv_pass_error" />
+
+
+        </LinearLayout>
+    </ScrollView>
 
     <LinearLayout
         android:id="@+id/linearLayout"

@@ -112,7 +112,9 @@ class SignupInteractor {
                                                         user.str_username,
                                                         user.str_password,
                                                         user.str_userId,
-                                                        userId.toString()
+                                                        userId.toString(),
+                                                        user.str_nikname,
+                                                        user.str_phone
                                                     )
 
 
@@ -130,7 +132,9 @@ class SignupInteractor {
                                                                     0,
                                                                     0,
                                                                     0,
-                                                                    user.str_username
+                                                                    user.str_username,
+                                                                    user.str_nikname,
+                                                                    user.str_phone
                                                                 )
 
 
