@@ -1,6 +1,7 @@
 package com.example.chatappkotlin.view.fragment
 
 
+import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -77,7 +78,7 @@ class ProfileFragment : Fragment() {
 
             val intent = Intent(activity, EditProfileActivity::class.java)
             intent.putExtra(Constants.INTENT_USER, userSettings)
-            activity!!.startActivity(intent)
+            startActivityForResult(intent, 10)
         }
 
 
@@ -149,10 +150,10 @@ class ProfileFragment : Fragment() {
         var tv_following: TextView? = null
         var tv_nickname: TextView? = null
         var userSettings: UserSettings? = null
-        var edit_profile : TextView? = null
+        var edit_profile: TextView? = null
 
 
-        var type : Int? = null
+        var type: Int? = null
 
         @JvmStatic
         fun newInstance(param1: UserSettings?, param2: String) =
@@ -162,7 +163,6 @@ class ProfileFragment : Fragment() {
                     putString(ARG_PARAM2, param2)
                 }
             }
-
 
 
     }
@@ -213,5 +213,18 @@ class ProfileFragment : Fragment() {
 
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 
+
+
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == 10) {
+
+            if (resultCode == Activity.RESULT_OK) {
+
+                Toast.makeText(activity, "WEWE", Toast.LENGTH_SHORT).show()
+
+            }
+        }
+    }
 }

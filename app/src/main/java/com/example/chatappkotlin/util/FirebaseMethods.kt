@@ -15,6 +15,10 @@ class FirebaseMethods {
     var valueEventListener3: ValueEventListener? = null
     var valueEventListener4: ValueEventListener? = null
 
+    //update profile
+    var valueEventListener5: ValueEventListener? = null
+    var valueEventListener6: ValueEventListener? = null
+
     internal val gotResult = BooleanArray(1)
 
 
@@ -50,7 +54,7 @@ class FirebaseMethods {
                             isnotEqual = true
 
                             registrationCallback.onUserExists()
-                            valueEventListener1?.let { databaseReference.removeEventListener(it) }
+                            valueEventListener1?.let { databaseReference.removeEventListener(this) }
                             break
 
                         }
@@ -133,17 +137,17 @@ class FirebaseMethods {
 
                 for (dataSnapshot1 in dataSnapshot.children) {
 
-                    val user_email = dataSnapshot1.child("str_email").value.toString()
+                    val user_email = dataSnapshot1.child("str_userId").value.toString()
 
-                    if (user_email.equals(user.str_email)) {
+                    if (user_email.equals(users.str_userId)) {
 
                         var last_image = 0
                         var tot = last_image + 1
 
 
                         var profilePic = ProfilePic(
-                            uriArrayList1[0].toString(), "true", uriArrayList1[1].toString()
 
+                            uriArrayList1[0].toString(), "true", uriArrayList1[1].toString()
                         )
 
                         databaseReference.child(dataSnapshot1.key.toString()).child("photos")
@@ -166,6 +170,55 @@ class FirebaseMethods {
             override fun onConnectionTimeOut() {
                 loginCallback.onConnectionTimeOut()
                 databaseReference.removeEventListener(valueEventListener3 as ValueEventListener)
+            }
+        })
+    }
+
+    fun updateprofile(
+        databaseReference: DatabaseReference,
+        userSettings: UserSettings,
+        user: User,
+        updateCallback: UpdateCallback
+    ) {
+
+
+        valueEventListener5 = object : ValueEventListener {
+            override fun onCancelled(p0: DatabaseError) {
+
+            }
+
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+
+                if (dataSnapshot.exists()) {
+
+                    databaseReference.child("User").child(user.id!!).setValue(user)
+                        .addOnCompleteListener {
+
+                            if (it.isSuccessful) {
+
+                                updateCallback.onSuccess(userSettings)
+                                databaseReference.child("User")
+                                    .removeEventListener(valueEventListener5 as ValueEventListener)
+                            } else {
+
+                                updateCallback.onFailure()
+                                databaseReference.child("User")
+                                    .removeEventListener(valueEventListener5 as ValueEventListener)
+                            }
+                        }
+                }
+            }
+
+        }
+
+        databaseReference.child("User")
+            .addValueEventListener(valueEventListener5 as ValueEventListener)
+        checkConnectionTimeout(object : ConnectionTimeoutCallback {
+            override fun onConnectionTimeOut() {
+                updateCallback.onConnectionTimeOut()
+                databaseReference.child("User")
+                    .removeEventListener(valueEventListener5 as ValueEventListener)
+
             }
         })
     }
@@ -403,4 +456,17 @@ class FirebaseMethods {
         fun onErrorPassword()
 
     }
+
+    interface UpdateCallback {
+        fun onSuccess(userSettings: UserSettings)
+
+        fun onFailure()
+
+        fun onConnectionTimeOut()
+
+        fun onErrorPassword()
+
+    }
+
+
 }
