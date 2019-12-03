@@ -2,6 +2,7 @@ package com.example.chatappkotlin.model
 
 import android.net.Uri
 import android.os.Handler
+import com.example.chatappkotlin.ProfilePic
 import com.example.chatappkotlin.util.FirebaseMethods
 import com.example.chatappkotlin.User
 import com.example.chatappkotlin.UserSettings
@@ -124,6 +125,7 @@ class SignupInteractor {
 
                                                             if (task.isSuccessful) {
 
+                                                                var profilePic : ProfilePic? = null
                                                                 var user_settings = UserSettings(
                                                                     user.str_email,
                                                                     userId.toString(),

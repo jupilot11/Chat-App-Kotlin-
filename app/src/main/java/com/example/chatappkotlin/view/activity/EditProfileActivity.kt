@@ -32,6 +32,9 @@ import kotlinx.android.synthetic.main.activity_edit_profile.et_email
 import kotlinx.android.synthetic.main.activity_edit_profile.et_nickname
 import kotlinx.android.synthetic.main.activity_edit_profile.et_phone
 import kotlinx.android.synthetic.main.activity_signup.*
+import java.net.URI
+import java.util.*
+import kotlin.collections.ArrayList
 
 class EditProfileActivity : AppCompatActivity(), View.OnClickListener {
 
@@ -53,6 +56,7 @@ class EditProfileActivity : AppCompatActivity(), View.OnClickListener {
     private var profile: Profile? = null
     private var prfilePicArrayList: ArrayList<ProfilePic>? = null
     private var firebaseMethods: FirebaseMethods? = null
+    private var uriArrayList1: ArrayList<Uri>? = null
 
 
     private var database: FirebaseDatabase? = null
@@ -62,6 +66,7 @@ class EditProfileActivity : AppCompatActivity(), View.OnClickListener {
     private var storageReference: StorageReference? = null
 
     private var REQUEST_IMAGE = 0
+    private var profilePic: ProfilePic? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,8 +81,17 @@ class EditProfileActivity : AppCompatActivity(), View.OnClickListener {
             userSetting = intent.getParcelableExtra(Constants.INTENT_USER)
 
 
+            profilePic = ProfilePic(
+
+                userSetting!!.profile!!.arrayList?.get(0)?.uri,
+                "true",
+                userSetting!!.profile!!.arrayList?.get(0)?.orig_uri
+            )
+
+
         }
 
+        uriArrayList = ArrayList()
 
         firebaseAuth = FirebaseAuth.getInstance()
         database = FirebaseDatabase.getInstance()
@@ -96,6 +110,13 @@ class EditProfileActivity : AppCompatActivity(), View.OnClickListener {
         et_nickname.setText(userSetting!!.str_nickname)
         et_phone.setText(userSetting!!.str_phone)
 
+        if (userSetting!!.str_biography.equals("") || userSetting!!.str_biography.equals("null")) {
+
+            et_bio.setText("")
+        } else {
+            et_bio.setText(userSetting!!.str_biography)
+
+        }
         img_view_close.setOnClickListener(this)
         image_proceed.setOnClickListener(this)
         edit_pic.setOnClickListener(this)
@@ -259,58 +280,81 @@ class EditProfileActivity : AppCompatActivity(), View.OnClickListener {
                 str_phone = et_phone.text.toString()
 
 
-                comparedUser = UserSettings(
-                    str_email,
-                    str_display_name,
-                    str_biography,
-                    str_nickname,
-                    str_phone
-                )
 
-//                to onActivityResult
-//                var intent = Intent()
-//                setResult(Activity.RESULT_OK, intent)
-//                finish()
+                if (str_email.equals("") || str_display_name.equals("") || str_nickname.equals("")) {
 
-                user = User(
-                    str_email,
-                    str_display_name,
-                    userSetting!!.str_password,
-                    userSetting!!.str_userId,
-                    userSetting!!.str_id,
-                    str_nickname,
-                    str_phone
-                )
+                    Toast.makeText(this@EditProfileActivity, "Please fill required fields.", Toast.LENGTH_SHORT).show()
+
+                } else {
+
+                    comparedUser = UserSettings(
+                        str_email,
+                        userSetting!!.str_id,
+                        userSetting!!.str_password,
+                        userSetting!!.str_userId,
+                        userSetting!!.followers,
+                        userSetting!!.following,
+                        userSetting!!.posts,
+                        str_display_name,
+                        str_nickname,
+                        str_phone,
+                        str_biography
+                    )
+
+                    user = User(
+                        str_email,
+                        str_display_name,
+                        userSetting!!.str_password,
+                        userSetting!!.str_userId,
+                        userSetting!!.str_id,
+                        str_nickname,
+                        str_phone
+                    )
+
+                    dialogHelper!!.showProgressDialog(this, "Please wait...", false)
+
+                    firebaseMethods!!.updateprofile(
+                        table_user!!,
+                        comparedUser!!,
+                        user!!,
+                        object : FirebaseMethods.UpdateCallback {
+                            override fun onSuccess(userSettings: UserSettings) {
 
 
-                firebaseMethods!!.updateprofile(
-                    table_user!!,
-                    userSetting!!,
-                    user!!,
-                    object : FirebaseMethods.UpdateCallback {
-                        override fun onSuccess(userSettings: UserSettings) {
-
-                            Toast.makeText(this@EditProfileActivity, " You Passed ", Toast.LENGTH_SHORT).show()
+                                uploadImage(uriArrayList!!, comparedUser!!, user!!, profilePic!!)
 
 
-                        }
+                            }
 
-                        override fun onFailure() {
+                            override fun onFailure() {
 
-                            Toast.makeText(this@EditProfileActivity, "You failed", Toast.LENGTH_SHORT).show()
+                                dialogHelper!!.dismissProgressDialog()
+                                Toast.makeText(
+                                    this@EditProfileActivity,
+                                    "You failed",
+                                    Toast.LENGTH_SHORT
+                                ).show()
 
-                        }
+                            }
 
-                        override fun onConnectionTimeOut() {
+                            override fun onConnectionTimeOut() {
 
-                            Toast.makeText(this@EditProfileActivity, "Connection Timed out", Toast.LENGTH_SHORT).show()
+                                dialogHelper!!.dismissProgressDialog()
+                                Toast.makeText(
+                                    this@EditProfileActivity,
+                                    "Connection Timed out",
+                                    Toast.LENGTH_SHORT
+                                ).show()
 
-                        }
+                            }
 
-                        override fun onErrorPassword() {
-                        }
+                            override fun onErrorPassword() {
+                            }
 
-                    })
+                        })
+
+                }
+
             }
 
         }
@@ -416,4 +460,161 @@ class EditProfileActivity : AppCompatActivity(), View.OnClickListener {
         startActivityForResult(intent, 101)
     }
 
+
+    private fun uploadImage(
+        uriArrayList: ArrayList<Uri>,
+        userSettings: UserSettings,
+        user: User,
+        profilePic: ProfilePic
+    ) {
+
+
+        if (uriArrayList.size == 0) {
+
+            table_user!!.child("User Settings")
+                .child(userSettings.str_id!!)
+                .setValue(userSettings)
+                .addOnCompleteListener {
+
+                    if (it.isSuccessful) {
+
+                        firebaseMethods?.insertProfileImages(
+                            table_user!!.child("User Settings"),
+                            userSettings,
+                            user,
+                            uriArrayList, profilePic,
+                            object :
+                                FirebaseMethods.LoginCallback {
+                                override fun onSuccess(
+                                    userSettings: UserSettings
+                                ) {
+
+
+                                    dialogHelper!!.dismissProgressDialog()
+
+                                    var intent = Intent()
+
+                                    intent.putExtra(Constants.INTENT_USER, userSettings)
+                                    setResult(Activity.RESULT_OK, intent)
+                                    finish()
+                                }
+
+
+                                override fun onFailure() {
+                                    dialogHelper!!.dismissProgressDialog()
+                                    Toast.makeText(
+                                        this@EditProfileActivity,
+                                        "YOU FAILED",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+
+
+                                }
+
+                                override fun onConnectionTimeOut() {
+                                    dialogHelper!!.dismissProgressDialog()
+                                    Toast.makeText(
+                                        this@EditProfileActivity,
+                                        "Connection Timed out.",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+
+
+                                }
+
+                                override fun onErrorPassword() {
+                                }
+                            })
+
+                    }
+                }
+
+        } else {
+
+            uriArrayList1 = ArrayList()
+            var ctr = 0
+
+            for (i in 0 until uriArrayList.size) {
+
+                val ref =
+                    storageReference?.child("images/" + UUID.randomUUID().toString())
+
+                ref?.putFile(uriArrayList[i])?.addOnSuccessListener {
+                    ref.downloadUrl.addOnSuccessListener { uri ->
+
+                        uriArrayList1?.add(uri)
+
+                        ctr++
+
+                        if (ctr == 2) {
+
+
+                            table_user!!.child("User Settings")
+                                .child(userSettings.str_id!!)
+                                .setValue(userSettings)
+                                .addOnCompleteListener {
+
+                                    if (it.isSuccessful) {
+
+                                        firebaseMethods?.insertProfileImages(
+                                            table_user!!.child("User Settings"),
+                                            userSettings,
+                                            user,
+                                            uriArrayList1!!, profilePic!!,
+                                            object :
+                                                FirebaseMethods.LoginCallback {
+                                                override fun onSuccess(
+                                                    userSettings: UserSettings
+                                                ) {
+
+
+                                                    dialogHelper!!.dismissProgressDialog()
+                                                    Toast.makeText(
+                                                        this@EditProfileActivity,
+                                                        "SUCCESS",
+                                                        Toast.LENGTH_SHORT
+                                                    ).show()
+
+
+                                                }
+
+                                                override fun onFailure() {
+                                                    dialogHelper!!.dismissProgressDialog()
+                                                    Toast.makeText(
+                                                        this@EditProfileActivity,
+                                                        "YOU FAILED",
+                                                        Toast.LENGTH_SHORT
+                                                    ).show()
+
+
+                                                }
+
+                                                override fun onConnectionTimeOut() {
+                                                    dialogHelper!!.dismissProgressDialog()
+                                                    Toast.makeText(
+                                                        this@EditProfileActivity,
+                                                        "Connection Timed out.",
+                                                        Toast.LENGTH_SHORT
+                                                    ).show()
+
+
+                                                }
+
+                                                override fun onErrorPassword() {
+                                                }
+                                            })
+
+                                    }
+                                }
+
+
+                        }
+                    }
+
+                }
+
+            }
+        }
+
+    }
 }

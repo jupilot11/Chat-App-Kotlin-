@@ -35,7 +35,6 @@ class HomeActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener {
     var homeFragment: Fragment? = null
     var notifFragment: Fragment? = null
     var profileFragment: Fragment? = null
-    var uploadFragment: UploadFragment? = null
     var searchFragment: SearchFragment? = null
     private var actionBarDrawerToggle: ActionBarDrawerToggle? = null
     private var navigationDrawerHeader: View? = null
@@ -151,14 +150,9 @@ class HomeActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener {
             }
             2 -> {
 
-                imageView3.visibility = View.GONE
-                drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
 
-                uploadFragment = UploadFragment.newInstance("", "")
-                val ft = supportFragmentManager.beginTransaction()
-                ft.replace(R.id.framelayout, uploadFragment as UploadFragment, "")
-                ft.commit()
-
+                val intent = Intent(this, UploadActivity::class.java)
+                startActivity(intent)
 
             }
             3 -> {

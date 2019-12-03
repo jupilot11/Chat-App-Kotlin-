@@ -62,7 +62,7 @@
             android:hint="Email Address"
             android:inputType="textEmailAddress"
             android:padding="10dp"
-            android:text="joeydee@gmail.com"
+            android:text="lariosajupilot1@gmail.com"
             android:textSize="@dimen/text_large" />
 
         <TextView

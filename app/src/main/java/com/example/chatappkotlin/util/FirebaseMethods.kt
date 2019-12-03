@@ -124,6 +124,7 @@ class FirebaseMethods {
         users: UserSettings,
         user: User,
         uriArrayList1: ArrayList<Uri>,
+        profilePic: ProfilePic,
         loginCallback: LoginCallback
     ) {
 
@@ -145,18 +146,90 @@ class FirebaseMethods {
                         var tot = last_image + 1
 
 
-                        var profilePic = ProfilePic(
+
+                        if (uriArrayList1.size == 0) {
+
+                            databaseReference.child(dataSnapshot1.key.toString()).child("photos")
+                                .child("01")
+                                .setValue(profilePic).addOnSuccessListener {
+
+                                    loginCallback.onSuccess(users)
+                                    databaseReference.removeEventListener(valueEventListener3 as ValueEventListener)
+                                }
+
+                        } else {
+
+                            var profilePics = ProfilePic(
+
+                                uriArrayList1[0].toString(), "true", uriArrayList1[1].toString()
+                            )
+
+                            databaseReference.child(dataSnapshot1.key.toString()).child("photos")
+                                .child("01")
+                                .setValue(profilePics).addOnSuccessListener {
+
+                                    loginCallback.onSuccess(users)
+                                    databaseReference.removeEventListener(valueEventListener3 as ValueEventListener)
+                                }
+
+                        }
+
+
+                    }
+                }
+
+            }
+
+        }
+
+        databaseReference.addListenerForSingleValueEvent(valueEventListener3 as ValueEventListener)
+        checkConnectionTimeout(object : ConnectionTimeoutCallback {
+            override fun onConnectionTimeOut() {
+                loginCallback.onConnectionTimeOut()
+                databaseReference.removeEventListener(valueEventListener3 as ValueEventListener)
+            }
+        })
+    }
+
+
+    fun insertProfileImages(
+        databaseReference: DatabaseReference,
+        users: UserSettings,
+        user: User,
+        uriArrayList1: ArrayList<Uri>,
+        loginCallback: LoginCallback
+    ) {
+
+        valueEventListener3 = object : ValueEventListener {
+            override fun onCancelled(p0: DatabaseError) {
+                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
+
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                gotResult[0] = true
+
+                for (dataSnapshot1 in dataSnapshot.children) {
+
+                    val user_email = dataSnapshot1.child("str_userId").value.toString()
+
+                    if (user_email.equals(users.str_userId)) {
+
+                        var last_image = 0
+                        var tot = last_image + 1
+
+                        var profilePics = ProfilePic(
 
                             uriArrayList1[0].toString(), "true", uriArrayList1[1].toString()
                         )
 
                         databaseReference.child(dataSnapshot1.key.toString()).child("photos")
-                            .child("0$tot")
-                            .setValue(profilePic).addOnSuccessListener {
+                            .child("01")
+                            .setValue(profilePics).addOnSuccessListener {
 
                                 loginCallback.onSuccess(users)
                                 databaseReference.removeEventListener(valueEventListener3 as ValueEventListener)
                             }
+
 
                     }
                 }
@@ -199,6 +272,7 @@ class FirebaseMethods {
                                 updateCallback.onSuccess(userSettings)
                                 databaseReference.child("User")
                                     .removeEventListener(valueEventListener5 as ValueEventListener)
+
                             } else {
 
                                 updateCallback.onFailure()
@@ -211,8 +285,12 @@ class FirebaseMethods {
 
         }
 
+
+
         databaseReference.child("User")
-            .addValueEventListener(valueEventListener5 as ValueEventListener)
+            .addListenerForSingleValueEvent(valueEventListener5 as ValueEventListener)
+
+
         checkConnectionTimeout(object : ConnectionTimeoutCallback {
             override fun onConnectionTimeOut() {
                 updateCallback.onConnectionTimeOut()
@@ -359,6 +437,8 @@ class FirebaseMethods {
                             var str_phone =
                                 datasnaphot2.child("str_phone")
                                     .value.toString()
+                            var str_bio = datasnaphot2.child("str_biography")
+                                .value.toString()
 
                             for (datasnaphot3 in datasnaphot2.child("photos").children) {
 
@@ -403,7 +483,8 @@ class FirebaseMethods {
                                     posts.toInt(),
                                     fullname,
                                     nickname,
-                                    str_phone
+                                    str_phone,
+                                    str_bio
                                 )
 
                                 break

@@ -65,6 +65,7 @@ class RealtimeService : IntentService("Realtime") {
                                 var str_phone =
                                     datasnapshot1.child("str_phone").value.toString()
 
+                                var str_bio = datasnapshot1.child("str_biography").value.toString()
 
 
                                 for (datasnaphot3 in datasnapshot1.child("photos").children) {
@@ -107,7 +108,8 @@ class RealtimeService : IntentService("Realtime") {
                                         posts.toInt(),
                                         fullname,
                                         nickname,
-                                        str_phone
+                                        str_phone,
+                                        str_bio
                                     )
 
 

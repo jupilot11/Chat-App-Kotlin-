@@ -25,6 +25,7 @@ import com.example.chatappkotlin.util.customview.CircleImageView
 import com.example.chatappkotlin.util.customview.CircleImageview
 import com.example.chatappkotlin.view.activity.EditProfileActivity
 import com.google.firebase.database.*
+import kotlinx.android.synthetic.main.fragment_profile.*
 import java.io.IOException
 import java.io.InputStream
 import java.net.HttpURLConnection
@@ -66,10 +67,11 @@ class ProfileFragment : Fragment() {
         table_user = database!!.reference.child("User Settings")
 
         imageView = view.findViewById(R.id.circleImageview)
-        tv_followers = view.findViewById(R.id.tv_followers)
-        tv_post = view.findViewById(R.id.tv_posts)
-        tv_following = view.findViewById(R.id.tv_following)
-        tv_nickname = view.findViewById(R.id.tv_nickname)
+        followers = view.findViewById(R.id.tv_followers)
+        posts = view.findViewById(R.id.tv_posts)
+        following = view.findViewById(R.id.tv_following)
+        nickname = view.findViewById(R.id.tv_nickname)
+        bio = view.findViewById(R.id.tv_bio)
         edit_profile = view.findViewById(R.id.tv_edit_profile)
 
 
@@ -83,11 +85,19 @@ class ProfileFragment : Fragment() {
 
 
 
+        if (userSettings!!.str_biography.equals("") || userSettings!!.str_biography.equals("null")) {
 
-        tv_followers!!.text = userSettings!!.followers.toString()
-        tv_post!!.text = userSettings!!.posts.toString()
-        tv_following!!.text = userSettings!!.following.toString()
-        tv_nickname!!.text = userSettings!!.str_nickname.toString()
+            bio!!.visibility = View.GONE
+
+        } else {
+            bio!!.visibility = View.VISIBLE
+            bio!!.text = userSettings!!.str_biography.toString()
+        }
+
+        followers!!.text = userSettings!!.followers.toString()
+        posts!!.text = userSettings!!.posts.toString()
+        following!!.text = userSettings!!.following.toString()
+        nickname!!.text = userSettings!!.str_nickname.toString()
 
 
         Glide.with(activity!!.applicationContext)
@@ -105,7 +115,7 @@ class ProfileFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         registerReceiver()
-        getRealtime()
+        getRealtime(userSettings!!)
 
 
     }
@@ -131,7 +141,7 @@ class ProfileFragment : Fragment() {
         registerReceiver()
     }
 
-    fun getRealtime() {
+    fun getRealtime(userSettings: UserSettings) {
 
 
         val intent = Intent(activity, RealtimeService::class.java)
@@ -144,11 +154,11 @@ class ProfileFragment : Fragment() {
 
 
         var imageView: CircleImageView? = null
-        var tv_followers: TextView? = null
-        var tv_post: TextView? = null
-
-        var tv_following: TextView? = null
-        var tv_nickname: TextView? = null
+        var followers: TextView? = null
+        var posts: TextView? = null
+        var following: TextView? = null
+        var nickname: TextView? = null
+        var bio: TextView? = null
         var userSettings: UserSettings? = null
         var edit_profile: TextView? = null
 
@@ -192,10 +202,21 @@ class ProfileFragment : Fragment() {
 
                 userSettings = intent.getParcelableExtra(Constants.INTENT_USER)
 
-                tv_followers!!.text = userSettings!!.followers.toString()
-                tv_post!!.text = userSettings!!.posts.toString()
-                tv_following!!.text = userSettings!!.following.toString()
-                tv_nickname!!.text = userSettings!!.str_nickname.toString()
+
+
+                if (userSettings!!.str_biography.equals("") || userSettings!!.str_biography.equals("null")) {
+
+                    bio!!.visibility = View.GONE
+
+                } else {
+                    bio!!.visibility = View.VISIBLE
+                    bio!!.text = userSettings!!.str_biography.toString()
+                }
+
+                followers!!.text = userSettings!!.followers.toString()
+                posts!!.text = userSettings!!.posts.toString()
+                following!!.text = userSettings!!.following.toString()
+                nickname!!.text = userSettings!!.str_nickname.toString()
 
                 Glide.with(context!!.applicationContext)
                     .load((userSettings!!.profile!!.arrayList!![0].uri))
@@ -216,14 +237,15 @@ class ProfileFragment : Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 
 
-
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 10) {
 
             if (resultCode == Activity.RESULT_OK) {
 
-                Toast.makeText(activity, "WEWE", Toast.LENGTH_SHORT).show()
 
+                var settings : UserSettings = data!!.getParcelableExtra(Constants.INTENT_USER)
+
+                getRealtime(settings)
             }
         }
     }

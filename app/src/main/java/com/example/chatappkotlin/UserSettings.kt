@@ -65,33 +65,6 @@ class UserSettings : Parcelable {
         this.str_biography = str_bio
     }
 
-    constructor(
-        str_email: String?,
-        str_id: String?,
-        str_password: String?,
-        str_userId: String?,
-        followers: Int?,
-        following: Int?,
-        posts: Int?,
-        str_display_name: String?,
-        str_nickname: String?,
-        str_phone: String?,
-        str_bio: String?
-    ) {
-        this.str_email = str_email
-        this.str_id = str_id
-        this.str_password = str_password
-        this.str_userId = str_userId
-        this.followers = followers
-        this.following = following
-        this.posts = posts
-        this.str_display_name = str_display_name
-        this.str_nickname = str_nickname
-        this.str_phone = str_phone
-        this.str_biography = str_bio
-
-    }
-
 
     constructor(
         str_email: String?,
@@ -140,6 +113,31 @@ class UserSettings : Parcelable {
         this.str_display_name = str_display_name
         this.str_nickname = str_nickname
         this.str_phone = str_phone
+    }
+    constructor(
+        str_email: String?,
+        str_id: String?,
+        str_password: String?,
+        str_userId: String?,
+        followers: Int?,
+        following: Int?,
+        posts: Int?,
+        str_display_name: String?,
+        str_nickname: String?,
+        str_phone: String?,
+        str_bio : String?
+    ) {
+        this.str_email = str_email
+        this.str_id = str_id
+        this.str_password = str_password
+        this.str_userId = str_userId
+        this.followers = followers
+        this.following = following
+        this.posts = posts
+        this.str_display_name = str_display_name
+        this.str_nickname = str_nickname
+        this.str_phone = str_phone
+        this.str_biography = str_bio
     }
 
     constructor(
