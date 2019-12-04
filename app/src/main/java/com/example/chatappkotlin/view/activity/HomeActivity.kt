@@ -101,10 +101,12 @@ class HomeActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener {
             1 -> {
 
 
-
             }
             2 -> {
 
+                val intent = Intent(this, UploadActivity::class.java)
+                intent.putExtra(INTENT_USER, user)
+                startActivity(intent)
 
             }
             3 -> {
@@ -152,6 +154,7 @@ class HomeActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener {
 
 
                 val intent = Intent(this, UploadActivity::class.java)
+                intent.putExtra(INTENT_USER, user)
                 startActivity(intent)
 
             }
@@ -188,7 +191,7 @@ class HomeActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener {
 
         var user: UserSettings? = null
         var type: Int? = null
-        var bottomNavigationMenu : BottomNavigationMenu? = null
+        var bottomNavigationMenu: BottomNavigationMenu? = null
     }
 
     private fun setupDrawerToggle(): ActionBarDrawerToggle {

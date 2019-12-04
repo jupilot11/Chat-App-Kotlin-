@@ -7,9 +7,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 
 import com.example.chatappkotlin.R
 import com.example.chatappkotlin.view.activity.UploadActivity
+import kotlinx.android.synthetic.main.fragment_upload_stepone.*
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -17,7 +19,7 @@ private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
 
-class UploadSteptwoFragment : Fragment() {
+class UploadSteptwoFragment : Fragment(), View.OnClickListener {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -36,15 +38,16 @@ class UploadSteptwoFragment : Fragment() {
     ): View? {
 
         val view = inflater.inflate(R.layout.fragment_upload_steptwo, container, false)
+
+
+
+
         return view
     }
 
 
-
-
-
-
     companion object {
+
 
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
@@ -56,5 +59,10 @@ class UploadSteptwoFragment : Fragment() {
                     UploadActivity.position = 2
                 }
             }
+    }
+
+    override fun onClick(p0: View?) {
+
+
     }
 }
