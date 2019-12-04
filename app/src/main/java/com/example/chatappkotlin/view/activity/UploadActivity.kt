@@ -1,16 +1,26 @@
 package com.example.chatappkotlin.view.activity
 
+import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.example.chatappkotlin.Posts
 import com.example.chatappkotlin.R
 import com.example.chatappkotlin.UserSettings
 import com.example.chatappkotlin.util.Constants.Companion.INTENT_USER
+import com.example.chatappkotlin.util.DialogHelper
+import com.example.chatappkotlin.util.FirebaseMethods
 import com.example.chatappkotlin.view.fragment.UploadSteponeFragment
 import com.example.chatappkotlin.view.fragment.UploadSteptwoFragment
 import com.google.android.gms.common.internal.service.Common
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import kotlinx.android.synthetic.main.activity_upload.*
+import java.util.*
 
 class UploadActivity : AppCompatActivity() {
 
@@ -18,12 +28,29 @@ class UploadActivity : AppCompatActivity() {
     var uploadSteptwoFragment: Fragment? = null
 
     var userSettings: UserSettings? = null
+    var userPosts: Posts? = null
+
+    var str_caption: String? = null
+
+    private var database: FirebaseDatabase? = null
+    private var table_user: DatabaseReference? = null
+    private var firebaseAuth: FirebaseAuth? = null
+    private var storage: FirebaseStorage? = null
+    private var storageReference: StorageReference? = null
+    private var firebaseMethods: FirebaseMethods? = null
+    private var dialogHelper: DialogHelper? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_upload)
 
-
+        firebaseAuth = FirebaseAuth.getInstance()
+        database = FirebaseDatabase.getInstance()
+        table_user = database!!.reference
+        firebaseMethods = FirebaseMethods()
+        storage = FirebaseStorage.getInstance()
+        storageReference = storage!!.reference
+        dialogHelper = DialogHelper()
         if (intent != null) {
 
             userSettings = intent.getParcelableExtra(INTENT_USER)
@@ -44,7 +71,8 @@ class UploadActivity : AppCompatActivity() {
 
                 if (UploadSteponeFragment.posts != null) {
                     position = 2
-                    uploadSteptwoFragment = UploadSteptwoFragment.newInstance("", "")
+                    uploadSteptwoFragment =
+                        UploadSteptwoFragment.newInstance(UploadSteponeFragment.posts!!, "")
                     val ft = supportFragmentManager.beginTransaction()
 //                ft.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_right)
                     ft.replace(
@@ -57,14 +85,96 @@ class UploadActivity : AppCompatActivity() {
                     img_view_close.setImageDrawable(getDrawable(R.drawable.ic_arrow_back_black_36dp))
                 } else {
 
-                    Toast.makeText(this, "Please select a photo to proceed", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Please select a photo to proceed", Toast.LENGTH_SHORT)
+                        .show()
 
                 }
 
 
             } else {
 
-                Toast.makeText(this, "Mulapas naka woie", Toast.LENGTH_SHORT).show()
+                str_caption = UploadSteptwoFragment.editText_caption!!.text.toString()
+
+                userPosts = Posts(
+                    UploadSteptwoFragment.posts!!.str_userid,
+                    str_caption,
+                    UploadSteptwoFragment.posts!!.str_uri
+                )
+
+                dialogHelper!!.showProgressDialog(this, "Please wait", false)
+
+                firebaseMethods!!.insertSingleImage(
+                    storageReference!!,
+                    UploadSteptwoFragment.posts!!.str_uri!!,
+                    object :
+                        FirebaseMethods.InsertToStorageCallback {
+                        override fun onSuccess(uri: Uri) {
+
+//                        dialogHelper!!.dismissProgressDialog()
+                            userPosts = Posts(
+                                UploadSteptwoFragment.posts!!.str_userid,
+                                uri.toString(),
+                                str_caption
+                            )
+                            firebaseMethods!!.addnewPost(
+                                table_user!!,
+                                userPosts!!,
+                                object : FirebaseMethods.AddPostCallback {
+                                    override fun onSuccess() {
+                                        dialogHelper!!.dismissProgressDialog()
+
+                                        Toast.makeText(
+                                            this@UploadActivity,
+                                            "You Passed",
+                                            Toast.LENGTH_SHORT
+                                        )
+                                            .show()
+                                    }
+
+                                    override fun onFailure() {
+                                        dialogHelper!!.dismissProgressDialog()
+
+                                        Toast.makeText(
+                                            this@UploadActivity,
+                                            "You failed",
+                                            Toast.LENGTH_SHORT
+                                        )
+                                            .show()
+                                    }
+
+                                    override fun onConnectionTimeOut() {
+
+                                        dialogHelper!!.dismissProgressDialog()
+                                        Toast.makeText(
+                                            this@UploadActivity,
+                                            "Connection Timed-out",
+                                            Toast.LENGTH_SHORT
+                                        )
+                                            .show()
+                                    }
+
+                                })
+                        }
+
+                        override fun onFailure() {
+                            dialogHelper!!.dismissProgressDialog()
+
+                            Toast.makeText(this@UploadActivity, "You failed", Toast.LENGTH_SHORT)
+                                .show()
+                        }
+
+                        override fun onConnectionTimeOut() {
+
+                            dialogHelper!!.dismissProgressDialog()
+                            Toast.makeText(
+                                this@UploadActivity,
+                                "Connection Timed-out",
+                                Toast.LENGTH_SHORT
+                            )
+                                .show()
+                        }
+
+                    })
 
             }
 
@@ -79,7 +189,6 @@ class UploadActivity : AppCompatActivity() {
 
             } else {
                 position = 1
-
                 if (UploadSteponeFragment.posts != null) {
                     uploadSteponeFragment = UploadSteponeFragment.newInstance(
                         UploadSteponeFragment.posts!!,

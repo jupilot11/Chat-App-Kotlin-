@@ -536,8 +536,7 @@ class EditProfileActivity : AppCompatActivity(), View.OnClickListener {
 
             for (i in 0 until uriArrayList.size) {
 
-                val ref =
-                    storageReference?.child("images/" + UUID.randomUUID().toString())
+                val ref = storageReference?.child("images/" + UUID.randomUUID().toString())
 
                 ref?.putFile(uriArrayList[i])?.addOnSuccessListener {
                     ref.downloadUrl.addOnSuccessListener { uri ->

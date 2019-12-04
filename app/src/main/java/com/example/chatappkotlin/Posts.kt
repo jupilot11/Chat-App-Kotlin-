@@ -25,6 +25,18 @@ class Posts : Parcelable{
         this.str_uri = str_uri
     }
 
+    constructor(str_userid: String?, str_caption: String?, str_uri: Uri?) {
+        this.str_userid = str_userid
+        this.str_caption = str_caption
+        this.str_uri = str_uri
+    }
+
+    constructor(str_userid: String?, str_photo: String?, str_caption: String?) {
+        this.str_userid = str_userid
+        this.str_photo = str_photo
+        this.str_caption = str_caption
+    }
+
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(str_userid)

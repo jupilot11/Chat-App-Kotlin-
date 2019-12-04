@@ -2,11 +2,14 @@ package com.example.chatappkotlin.util
 
 import android.net.Uri
 import android.os.Handler
-import com.example.chatappkotlin.Profile
-import com.example.chatappkotlin.ProfilePic
-import com.example.chatappkotlin.User
-import com.example.chatappkotlin.UserSettings
+import android.widget.Toast
+import com.example.chatappkotlin.*
+import com.example.chatappkotlin.view.fragment.UploadSteptwoFragment
+import com.google.android.gms.tasks.OnFailureListener
 import com.google.firebase.database.*
+import com.google.firebase.storage.StorageReference
+import java.util.*
+import kotlin.collections.ArrayList
 
 class FirebaseMethods {
 
@@ -14,10 +17,7 @@ class FirebaseMethods {
     var valueEventListener2: ValueEventListener? = null
     var valueEventListener3: ValueEventListener? = null
     var valueEventListener4: ValueEventListener? = null
-
-    //update profile
     var valueEventListener5: ValueEventListener? = null
-    var valueEventListener6: ValueEventListener? = null
 
     internal val gotResult = BooleanArray(1)
 
@@ -35,8 +35,6 @@ class FirebaseMethods {
         str_username: String,
         registrationCallback: RegistrationCallback
     ) {
-
-
         valueEventListener1 = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 gotResult[0] = true
@@ -118,6 +116,57 @@ class FirebaseMethods {
         fun onConnectionTimeOut()
     }
 
+
+    fun addnewPost(
+        databaseReference: DatabaseReference,
+        posts: Posts,
+        addPostCallback: AddPostCallback
+    ) {
+
+        databaseReference.child("Posts").child("Post" + System.currentTimeMillis())
+            .child(posts.str_userid!!).setValue(posts)
+            .addOnCompleteListener {
+
+                gotResult[0] = true
+
+                if (it.isSuccessful) {
+
+                    addPostCallback.onSuccess()
+
+                } else {
+
+                    addPostCallback.onFailure()
+
+                }
+            }
+
+        checkConnectionTimeout(object : ConnectionTimeoutCallback {
+            override fun onConnectionTimeOut() {
+                addPostCallback.onConnectionTimeOut()
+            }
+        })
+    }
+
+
+    fun insertSingleImage(
+        storageReference: StorageReference,
+        uri: Uri,
+        insertToStorageCallback: InsertToStorageCallback
+    ) {
+        val ref = storageReference.child("images/" + UUID.randomUUID().toString())
+
+        ref.putFile(uri).addOnSuccessListener {
+            ref.downloadUrl.addOnSuccessListener { uri ->
+
+                insertToStorageCallback.onSuccess(uri)
+
+            }
+
+        }.addOnFailureListener {
+            insertToStorageCallback.onFailure()
+
+        }
+    }
 
     fun insertProfileImages(
         databaseReference: DatabaseReference,
@@ -546,6 +595,22 @@ class FirebaseMethods {
         fun onConnectionTimeOut()
 
         fun onErrorPassword()
+
+    }
+
+    interface InsertToStorageCallback {
+
+        fun onSuccess(uri: Uri)
+        fun onFailure()
+        fun onConnectionTimeOut()
+
+    }
+
+    interface AddPostCallback {
+
+        fun onSuccess()
+        fun onFailure()
+        fun onConnectionTimeOut()
 
     }
 

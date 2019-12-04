@@ -1,12 +1,14 @@
 package com.example.chatappkotlin.view.fragment
 
 import android.content.Context
+import android.media.Image
 import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.ImageView
 import com.example.chatappkotlin.Posts
 
@@ -45,22 +47,24 @@ class UploadSteptwoFragment : Fragment(){
     ): View? {
 
         val view = inflater.inflate(R.layout.fragment_upload_steptwo, container, false)
-
+        image_preview = view.findViewById(R.id.imageView_preview)
+        editText_caption = view.findViewById(R.id.et_caption)
         return view
     }
 
 
     companion object {
 
-
+        var image_preview : ImageView? = null
+        var editText_caption : EditText? = null
         var posts: Posts? = null
 
 
         @JvmStatic
-        fun newInstance(param1: String, param2: String) =
+        fun newInstance(posts: Posts, param2: String) =
             UploadSteptwoFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
+                    putParcelable(ARG_PARAM4, posts)
                     putString(ARG_PARAM2, param2)
 
                     UploadActivity.position = 2
@@ -69,4 +73,18 @@ class UploadSteptwoFragment : Fragment(){
     }
 
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        if (posts != null) {
+
+            if (posts!!.str_uri != null) {
+
+                image_preview!!.setImageURI(posts!!.str_uri)
+
+            }
+
+        }
+
+    }
 }
