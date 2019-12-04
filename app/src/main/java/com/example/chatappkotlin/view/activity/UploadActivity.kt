@@ -40,21 +40,27 @@ class UploadActivity : AppCompatActivity() {
 
         image_proceed.setOnClickListener {
 
-
             if (position == 1) {
 
-                position = 2
-                uploadSteptwoFragment = UploadSteptwoFragment.newInstance("", "")
-                val ft = supportFragmentManager.beginTransaction()
+                if (UploadSteponeFragment.posts != null) {
+                    position = 2
+                    uploadSteptwoFragment = UploadSteptwoFragment.newInstance("", "")
+                    val ft = supportFragmentManager.beginTransaction()
 //                ft.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_right)
-                ft.replace(
-                    R.id.framelayout_upload,
-                    uploadSteptwoFragment as UploadSteptwoFragment,
-                    ""
-                )
-                ft.commit()
+                    ft.replace(
+                        R.id.framelayout_upload,
+                        uploadSteptwoFragment as UploadSteptwoFragment,
+                        ""
+                    )
+                    ft.commit()
 
-                img_view_close.setImageDrawable(getDrawable(R.drawable.ic_arrow_back_black_36dp))
+                    img_view_close.setImageDrawable(getDrawable(R.drawable.ic_arrow_back_black_36dp))
+                } else {
+
+                    Toast.makeText(this, "Please select a photo to proceed", Toast.LENGTH_SHORT).show()
+
+                }
+
 
             } else {
 

@@ -72,7 +72,6 @@ class UploadSteponeFragment : Fragment() {
             if (posts!!.str_uri != null) {
 
                 imageCam!!.visibility = View.GONE
-
                 imagepost!!.setImageURI(posts!!.str_uri)
 
 
