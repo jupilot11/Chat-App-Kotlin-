@@ -8,8 +8,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import com.example.chatappkotlin.Posts
 
 import com.example.chatappkotlin.R
+import com.example.chatappkotlin.UserSettings
 import com.example.chatappkotlin.view.activity.UploadActivity
 import kotlinx.android.synthetic.main.fragment_upload_stepone.*
 
@@ -17,18 +19,23 @@ import kotlinx.android.synthetic.main.fragment_upload_stepone.*
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
+private const val ARG_PARAM3 = "param3"
+private const val ARG_PARAM4 = "param4"
 
-
-class UploadSteptwoFragment : Fragment(), View.OnClickListener {
+class UploadSteptwoFragment : Fragment(){
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+    private var userSettings: UserSettings? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
+            userSettings = it.getParcelable(ARG_PARAM3)
+            posts = it.getParcelable(ARG_PARAM4)
         }
     }
 
@@ -39,14 +46,14 @@ class UploadSteptwoFragment : Fragment(), View.OnClickListener {
 
         val view = inflater.inflate(R.layout.fragment_upload_steptwo, container, false)
 
-
-
-
         return view
     }
 
 
     companion object {
+
+
+        var posts: Posts? = null
 
 
         @JvmStatic
@@ -61,8 +68,5 @@ class UploadSteptwoFragment : Fragment(), View.OnClickListener {
             }
     }
 
-    override fun onClick(p0: View?) {
 
-
-    }
 }
