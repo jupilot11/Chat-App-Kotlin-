@@ -128,8 +128,7 @@ class FirebaseMethods {
         addPostCallback: AddPostCallback
     ) {
 
-        var ctr = 0
-        var sum_posts = 0
+        var sum_posts: Int
 
         valueEventListener6 = object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {
