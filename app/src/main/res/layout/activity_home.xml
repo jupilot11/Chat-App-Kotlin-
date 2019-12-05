@@ -19,11 +19,12 @@
         app:layout_constraintTop_toTopOf="parent">
 
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/linearLayout5"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/toolbar"
             android:layout_width="0dp"
-            android:layout_height="60dp"
+            android:layout_height="55dp"
             android:orientation="horizontal"
+            android:elevation="20dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -32,9 +33,9 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
                 android:padding="15dp"
                 android:src="@drawable/wew"
+                android:layout_gravity="center"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/imageView3"
                 app:layout_constraintStart_toStartOf="parent"
@@ -44,15 +45,12 @@
                 android:id="@+id/imageView3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end"
+                android:layout_gravity="end|center"
                 android:layout_marginEnd="15dp"
-                android:src="@drawable/ic_dehaze_black_24dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:src="@drawable/ic_dehaze_black_24dp" />
 
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
 
         <FrameLayout
             android:id="@+id/framelayout"
@@ -61,7 +59,7 @@
             app:layout_constraintBottom_toTopOf="@+id/tablayout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayout5">
+            app:layout_constraintTop_toBottomOf="@+id/toolbar">
 
 
         </FrameLayout>
@@ -118,6 +116,7 @@
         </com.google.android.material.tabs.TabLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 
     <com.google.android.material.navigation.NavigationView

@@ -22,7 +22,10 @@ import com.example.chatappkotlin.UserSettings
 import com.example.chatappkotlin.util.Constants.Companion.INTENT_TYPE
 import com.example.chatappkotlin.util.Constants.Companion.INTENT_USER
 import com.example.chatappkotlin.util.RealtimeService
-import com.example.chatappkotlin.view.fragment.*
+import com.example.chatappkotlin.view.fragment.HomeFragment
+import com.example.chatappkotlin.view.fragment.NotifactionFragment
+import com.example.chatappkotlin.view.fragment.ProfileFragment
+import com.example.chatappkotlin.view.fragment.SearchFragment
 import com.google.android.material.bottomnavigation.BottomNavigationMenu
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.tabs.TabLayout
@@ -44,6 +47,8 @@ class HomeActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
+
+
 
         if (intent != null) {
 
