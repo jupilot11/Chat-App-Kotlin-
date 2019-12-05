@@ -12,16 +12,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.chatappkotlin.Posts
 import com.example.chatappkotlin.R
+import com.example.chatappkotlin.User
+import com.example.chatappkotlin.UserSettings
 import com.example.chatappkotlin.util.DialogHelper
 import com.example.chatappkotlin.util.FirebaseMethods
 import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.firebase.ui.database.SnapshotParser
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.Query
+import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 
@@ -29,6 +28,7 @@ import com.google.firebase.storage.StorageReference
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
+private const val ARG_PARAM3 = "param3"
 
 
 class HomeFragment : Fragment() {
@@ -46,6 +46,7 @@ class HomeFragment : Fragment() {
     private var linearLayoutManager: LinearLayoutManager? = null
     private var firebaseadapter: FirebaseRecyclerAdapter<*, *>? = null
     private var posts: Posts? = null
+    private var userSettings: UserSettings? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,6 +54,7 @@ class HomeFragment : Fragment() {
         arguments?.let {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
+            userSettings = it.getParcelable(ARG_PARAM3)
         }
     }
 
@@ -101,10 +103,10 @@ class HomeFragment : Fragment() {
 
 
         @JvmStatic
-        fun newInstance(param1: String, param2: String) =
+        fun newInstance(userSettings: UserSettings, param2: String) =
             HomeFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
+                    putParcelable(ARG_PARAM3, userSettings)
                     putString(ARG_PARAM2, param2)
                 }
             }
@@ -123,6 +125,14 @@ class HomeFragment : Fragment() {
     }
 
     private fun showList() {
+        var postses: Posts
+
+        var nickname = ""
+        var cropper_uri = ""
+        var userid = ""
+        var str_caption = ""
+        var str_photo = ""
+
         val query: Query = table_user!!.child("Posts")
         val optionss: FirebaseRecyclerOptions<Posts> = FirebaseRecyclerOptions.Builder<Posts>()
             .setQuery(query, object : SnapshotParser<Posts> {
@@ -130,16 +140,45 @@ class HomeFragment : Fragment() {
 
                     if (snapshot.childrenCount != 0L) {
 
+                        table_user!!.child("User Settings").child(userSettings!!.str_id!!)
+                            .addValueEventListener(object : ValueEventListener {
+                                override fun onCancelled(p0: DatabaseError) {
+                                    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                                }
 
-                        for (snapshot1 in snapshot.children) {
+                                override fun onDataChange(dataSnapshot: DataSnapshot) {
 
-                            val userid = snapshot1.child("str_userid").value.toString()
-                            val str_caption = snapshot1.child("str_caption").value.toString()
-                            val str_photo = snapshot1.child("str_photo").value.toString()
+                                    for (datasnphot2 in dataSnapshot.child("photos").children) {
 
-                            posts = Posts(userid, str_photo, str_caption)
+                                        for (i in 0 until dataSnapshot.child("photos").childrenCount) {
 
-                        }
+                                            nickname = dataSnapshot.child("str_nickname")
+                                                .value.toString()
+                                            cropper_uri =
+                                                datasnphot2.child("uri").value.toString()
+
+                                            for (snapshot1 in snapshot.children) {
+
+                                                userid =
+                                                    snapshot1.child("str_userid").value.toString()
+                                                str_caption =
+                                                    snapshot1.child("str_caption").value.toString()
+                                                str_photo =
+                                                    snapshot1.child("str_photo").value.toString()
+
+                                            }
+
+
+                                        }
+
+                                    }
+                                }
+
+
+                            })
+
+                        posts = Posts(userid, str_photo, str_caption)
+
 
                         return posts!!
 

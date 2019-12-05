@@ -62,7 +62,7 @@ class HomeActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener {
         viewpagers = findViewById<ConstraintLayout>(R.id.viewpager)
         tabLayouts = findViewById<TabLayout>(R.id.tablayout)
 
-        homeFragment = HomeFragment.newInstance("", "")
+        homeFragment = HomeFragment.newInstance(user!!, "")
         val ft = supportFragmentManager.beginTransaction()
         ft.replace(R.id.framelayout, homeFragment as HomeFragment, "")
         ft.commit()
@@ -136,7 +136,7 @@ class HomeActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener {
 
                 imageView3.visibility = View.GONE
                 drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
-                homeFragment = HomeFragment.newInstance("", "")
+                homeFragment = HomeFragment.newInstance(user!!, "")
                 val ft = supportFragmentManager.beginTransaction()
                 ft.replace(R.id.framelayout, homeFragment as HomeFragment, "")
                 ft.commit()
