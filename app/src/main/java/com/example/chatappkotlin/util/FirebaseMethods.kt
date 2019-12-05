@@ -2,14 +2,15 @@ package com.example.chatappkotlin.util
 
 import android.net.Uri
 import android.os.Handler
-import android.widget.Toast
 import com.example.chatappkotlin.*
-import com.example.chatappkotlin.view.fragment.UploadSteptwoFragment
-import com.google.android.gms.tasks.OnFailureListener
-import com.google.firebase.database.*
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.StorageReference
 import java.util.*
 import kotlin.collections.ArrayList
+
 
 class FirebaseMethods {
 
@@ -18,6 +19,10 @@ class FirebaseMethods {
     var valueEventListener3: ValueEventListener? = null
     var valueEventListener4: ValueEventListener? = null
     var valueEventListener5: ValueEventListener? = null
+
+    var valueEventListener6: ValueEventListener? = null
+    var valueEventListener7: ValueEventListener? = null
+
 
     internal val gotResult = BooleanArray(1)
 
@@ -123,6 +128,72 @@ class FirebaseMethods {
         addPostCallback: AddPostCallback
     ) {
 
+        var ctr = 0
+        var sum_posts = 0
+
+        valueEventListener6 = object : ValueEventListener {
+            override fun onCancelled(p0: DatabaseError) {
+
+            }
+
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+
+                for (dataSnapshot1 in dataSnapshot.children) {
+
+
+                    for (dataSnaphot2 in dataSnapshot1.children) {
+
+                        var id_num = dataSnaphot2.key.toString()
+
+                        if (posts.str_userid.equals(id_num)) {
+
+
+                        }
+                    }
+
+                }
+
+                databaseReference.child("User Settings").child(posts.str_userid!!)
+                    .addListenerForSingleValueEvent(valueEventListener7 as ValueEventListener)
+
+            }
+
+        }
+
+        valueEventListener7 = object : ValueEventListener {
+
+            override fun onCancelled(p0: DatabaseError) {
+                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
+
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+
+//                val userUpdates: MutableMap<String, Any> =
+//                    HashMap()
+//                userUpdates["alanisawesome/nickname"] = "Alan The Machine"
+//                userUpdates["gracehop/nickname"] = "Amazing Grace"
+
+                var posts_ = dataSnapshot.child("posts").value.toString()
+
+                sum_posts = posts_.toInt() + 1
+
+
+                databaseReference.child("User Settings").child(posts.str_userid!!).child("posts")
+                    .setValue(sum_posts).addOnCompleteListener {
+
+
+                        addPostCallback.onSuccess()
+
+                        databaseReference.removeEventListener(valueEventListener7 as ValueEventListener)
+                        databaseReference.removeEventListener(valueEventListener6 as ValueEventListener)
+
+
+                    }
+
+            }
+
+        }
+
         databaseReference.child("Posts").child("Post" + System.currentTimeMillis())
             .child(posts.str_userid!!).setValue(posts)
             .addOnCompleteListener {
@@ -131,18 +202,26 @@ class FirebaseMethods {
 
                 if (it.isSuccessful) {
 
-                    addPostCallback.onSuccess()
+
+
+                    databaseReference.child("Posts")
+                        .addListenerForSingleValueEvent(valueEventListener6 as ValueEventListener)
 
                 } else {
 
                     addPostCallback.onFailure()
-
+                    databaseReference.removeEventListener(valueEventListener7 as ValueEventListener)
+                    databaseReference.removeEventListener(valueEventListener6 as ValueEventListener)
                 }
             }
+
+
 
         checkConnectionTimeout(object : ConnectionTimeoutCallback {
             override fun onConnectionTimeOut() {
                 addPostCallback.onConnectionTimeOut()
+                databaseReference.removeEventListener(valueEventListener7 as ValueEventListener)
+                databaseReference.removeEventListener(valueEventListener6 as ValueEventListener)
             }
         })
     }
@@ -287,7 +366,7 @@ class FirebaseMethods {
 
         }
 
-        databaseReference.addValueEventListener(valueEventListener3 as ValueEventListener)
+        databaseReference.addListenerForSingleValueEvent(valueEventListener3 as ValueEventListener)
         checkConnectionTimeout(object : ConnectionTimeoutCallback {
             override fun onConnectionTimeOut() {
                 loginCallback.onConnectionTimeOut()
@@ -562,7 +641,7 @@ class FirebaseMethods {
 
 
         databaseReference.child("User")
-            .addValueEventListener(valueEventListener2 as ValueEventListener)
+            .addListenerForSingleValueEvent(valueEventListener2 as ValueEventListener)
 
         checkConnectionTimeout(object : ConnectionTimeoutCallback {
             override fun onConnectionTimeOut() {

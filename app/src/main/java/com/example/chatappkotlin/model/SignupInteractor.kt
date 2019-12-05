@@ -153,9 +153,7 @@ class SignupInteractor {
                                                                                 uriArrayList1!!,
                                                                                 object :
                                                                                     FirebaseMethods.LoginCallback {
-                                                                                    override fun onSuccess(
-                                                                                        userSettings: UserSettings
-                                                                                    ) {
+                                                                                    override fun onSuccess(userSettings: UserSettings) {
 
                                                                                         signupInterface.onDismissProgress()
                                                                                         signupInterface.onSuccess(

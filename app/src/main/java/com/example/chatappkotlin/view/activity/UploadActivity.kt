@@ -5,9 +5,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import com.example.chatappkotlin.Posts
-import com.example.chatappkotlin.R
-import com.example.chatappkotlin.UserSettings
+import com.example.chatappkotlin.*
 import com.example.chatappkotlin.util.Constants.Companion.INTENT_USER
 import com.example.chatappkotlin.util.DialogHelper
 import com.example.chatappkotlin.util.FirebaseMethods
@@ -103,78 +101,56 @@ class UploadActivity : AppCompatActivity() {
 
                 dialogHelper!!.showProgressDialog(this, "Please wait", false)
 
-                firebaseMethods!!.insertSingleImage(
-                    storageReference!!,
-                    UploadSteptwoFragment.posts!!.str_uri!!,
-                    object :
-                        FirebaseMethods.InsertToStorageCallback {
-                        override fun onSuccess(uri: Uri) {
 
-//                        dialogHelper!!.dismissProgressDialog()
-                            userPosts = Posts(
-                                UploadSteptwoFragment.posts!!.str_userid,
-                                uri.toString(),
-                                str_caption
-                            )
-                            firebaseMethods!!.addnewPost(
-                                table_user!!,
-                                userPosts!!,
-                                object : FirebaseMethods.AddPostCallback {
-                                    override fun onSuccess() {
-                                        dialogHelper!!.dismissProgressDialog()
+                val ref = storageReference?.child("images/" + UUID.randomUUID().toString())
 
-                                        Toast.makeText(
-                                            this@UploadActivity,
-                                            "You Passed",
-                                            Toast.LENGTH_SHORT
-                                        )
-                                            .show()
-                                    }
+                ref?.putFile(UploadSteptwoFragment.posts!!.str_uri!!)?.addOnSuccessListener {
+                    ref.downloadUrl.addOnSuccessListener { uri ->
 
-                                    override fun onFailure() {
-                                        dialogHelper!!.dismissProgressDialog()
 
-                                        Toast.makeText(
-                                            this@UploadActivity,
-                                            "You failed",
-                                            Toast.LENGTH_SHORT
-                                        )
-                                            .show()
-                                    }
+                        dialogHelper!!.dismissProgressDialog()
+                        userPosts = Posts(
+                            UploadSteptwoFragment.posts!!.str_userid,
+                            uri.toString(),
+                            str_caption
+                        )
+                        firebaseMethods!!.addnewPost(
+                            table_user!!,
+                            userPosts!!,
+                            object : FirebaseMethods.AddPostCallback {
+                                override fun onSuccess() {
+                                    dialogHelper!!.dismissProgressDialog()
 
-                                    override fun onConnectionTimeOut() {
+                                    finish()
+                                }
 
-                                        dialogHelper!!.dismissProgressDialog()
-                                        Toast.makeText(
-                                            this@UploadActivity,
-                                            "Connection Timed-out",
-                                            Toast.LENGTH_SHORT
-                                        )
-                                            .show()
-                                    }
+                                override fun onFailure() {
+                                    dialogHelper!!.dismissProgressDialog()
 
-                                })
-                        }
+                                    Toast.makeText(
+                                        this@UploadActivity,
+                                        "You failed",
+                                        Toast.LENGTH_SHORT
+                                    )
+                                        .show()
+                                }
 
-                        override fun onFailure() {
-                            dialogHelper!!.dismissProgressDialog()
+                                override fun onConnectionTimeOut() {
 
-                            Toast.makeText(this@UploadActivity, "You failed", Toast.LENGTH_SHORT)
-                                .show()
-                        }
+//                                        dialogHelper!!.dismissProgressDialog()
+                                    Toast.makeText(
+                                        this@UploadActivity,
+                                        "Connection Timed-out",
+                                        Toast.LENGTH_SHORT
+                                    )
+                                        .show()
+                                }
 
-                        override fun onConnectionTimeOut() {
+                            })
+                    }
 
-                            dialogHelper!!.dismissProgressDialog()
-                            Toast.makeText(
-                                this@UploadActivity,
-                                "Connection Timed-out",
-                                Toast.LENGTH_SHORT
-                            )
-                                .show()
-                        }
+                }
 
-                    })
 
             }
 
