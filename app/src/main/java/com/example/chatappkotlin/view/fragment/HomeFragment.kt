@@ -140,45 +140,48 @@ class HomeFragment : Fragment() {
 
                     if (snapshot.childrenCount != 0L) {
 
-                        table_user!!.child("User Settings").child(userSettings!!.str_id!!)
-                            .addValueEventListener(object : ValueEventListener {
-                                override fun onCancelled(p0: DatabaseError) {
-                                    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-                                }
+                        for (snapshot1 in snapshot.children) {
 
-                                override fun onDataChange(dataSnapshot: DataSnapshot) {
 
-                                    for (datasnphot2 in dataSnapshot.child("photos").children) {
+                            table_user!!.child("User Settings").child(userid)
+                                .addValueEventListener(object : ValueEventListener {
+                                    override fun onCancelled(p0: DatabaseError) {
+                                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                                    }
 
-                                        for (i in 0 until dataSnapshot.child("photos").childrenCount) {
+                                    override fun onDataChange(dataSnapshot: DataSnapshot) {
 
-                                            nickname = dataSnapshot.child("str_nickname")
-                                                .value.toString()
-                                            cropper_uri =
-                                                datasnphot2.child("uri").value.toString()
+                                        for (datasnphot2 in dataSnapshot.child("photos").children) {
 
-                                            for (snapshot1 in snapshot.children) {
+                                            for (i in 0 until dataSnapshot.child("photos").childrenCount) {
 
-                                                userid =
-                                                    snapshot1.child("str_userid").value.toString()
-                                                str_caption =
-                                                    snapshot1.child("str_caption").value.toString()
-                                                str_photo =
-                                                    snapshot1.child("str_photo").value.toString()
+                                                nickname = dataSnapshot.child("str_nickname")
+                                                    .value.toString()
+                                                cropper_uri =
+                                                    datasnphot2.child("uri").value.toString()
+
+                                                posts = Posts(userid, str_photo, str_caption)
 
                                             }
 
-
                                         }
-
                                     }
-                                }
+
+                                })
+
+                            userid =
+                                snapshot1.child("str_userid").value.toString()
+                            str_caption =
+                                snapshot1.child("str_caption").value.toString()
+                            str_photo =
+                                snapshot1.child("str_photo").value.toString()
 
 
-                            })
+
+
+                        }
 
                         posts = Posts(userid, str_photo, str_caption)
-
 
                         return posts!!
 
