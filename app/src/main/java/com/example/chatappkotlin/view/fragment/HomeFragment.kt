@@ -142,41 +142,12 @@ class HomeFragment : Fragment() {
 
                         for (snapshot1 in snapshot.children) {
 
-
-                            table_user!!.child("User Settings").child(userid)
-                                .addValueEventListener(object : ValueEventListener {
-                                    override fun onCancelled(p0: DatabaseError) {
-                                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-                                    }
-
-                                    override fun onDataChange(dataSnapshot: DataSnapshot) {
-
-                                        for (datasnphot2 in dataSnapshot.child("photos").children) {
-
-                                            for (i in 0 until dataSnapshot.child("photos").childrenCount) {
-
-                                                nickname = dataSnapshot.child("str_nickname")
-                                                    .value.toString()
-                                                cropper_uri =
-                                                    datasnphot2.child("uri").value.toString()
-
-                                                posts = Posts(userid, str_photo, str_caption)
-
-                                            }
-
-                                        }
-                                    }
-
-                                })
-
                             userid =
                                 snapshot1.child("str_userid").value.toString()
                             str_caption =
                                 snapshot1.child("str_caption").value.toString()
                             str_photo =
                                 snapshot1.child("str_photo").value.toString()
-
-
 
 
                         }

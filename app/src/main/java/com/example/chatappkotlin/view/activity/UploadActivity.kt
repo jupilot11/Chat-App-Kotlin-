@@ -112,7 +112,8 @@ class UploadActivity : AppCompatActivity() {
                         userPosts = Posts(
                             UploadSteptwoFragment.posts!!.str_userid,
                             uri.toString(),
-                            str_caption
+                            str_caption, userSettings!!.profile!!.arrayList?.get(0)?.uri,
+                            userSettings!!.str_nickname
                         )
                         firebaseMethods!!.addnewPost(
                             table_user!!,
@@ -127,12 +128,8 @@ class UploadActivity : AppCompatActivity() {
                                 override fun onFailure() {
                                     dialogHelper!!.dismissProgressDialog()
 
-                                    Toast.makeText(
-                                        this@UploadActivity,
-                                        "You failed",
-                                        Toast.LENGTH_SHORT
-                                    )
-                                        .show()
+                                    Toast.makeText(this@UploadActivity, "You failed", Toast.LENGTH_SHORT).show()
+
                                 }
 
                                 override fun onConnectionTimeOut() {

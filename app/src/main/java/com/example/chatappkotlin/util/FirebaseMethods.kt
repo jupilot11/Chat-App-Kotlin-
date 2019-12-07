@@ -20,7 +20,6 @@ class FirebaseMethods {
     var valueEventListener4: ValueEventListener? = null
     var valueEventListener5: ValueEventListener? = null
 
-    var valueEventListener6: ValueEventListener? = null
     var valueEventListener7: ValueEventListener? = null
 
 
@@ -130,35 +129,6 @@ class FirebaseMethods {
 
         var sum_posts: Int
 
-        valueEventListener6 = object : ValueEventListener {
-            override fun onCancelled(p0: DatabaseError) {
-
-            }
-
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-
-                for (dataSnapshot1 in dataSnapshot.children) {
-
-
-                    for (dataSnaphot2 in dataSnapshot1.children) {
-
-                        var id_num = dataSnaphot2.key.toString()
-
-                        if (posts.str_userid.equals(id_num)) {
-
-
-                        }
-                    }
-
-                }
-
-                databaseReference.child("User Settings").child(posts.str_userid!!)
-                    .addListenerForSingleValueEvent(valueEventListener7 as ValueEventListener)
-
-            }
-
-        }
-
         valueEventListener7 = object : ValueEventListener {
 
             override fun onCancelled(p0: DatabaseError) {
@@ -184,7 +154,6 @@ class FirebaseMethods {
                         addPostCallback.onSuccess()
 
                         databaseReference.removeEventListener(valueEventListener7 as ValueEventListener)
-                        databaseReference.removeEventListener(valueEventListener6 as ValueEventListener)
 
 
                     }
@@ -203,14 +172,14 @@ class FirebaseMethods {
 
 
 
-                    databaseReference.child("Posts")
-                        .addListenerForSingleValueEvent(valueEventListener6 as ValueEventListener)
+                    databaseReference.child("User Settings").child(posts.str_userid!!)
+                        .addListenerForSingleValueEvent(valueEventListener7 as ValueEventListener)
+
 
                 } else {
 
                     addPostCallback.onFailure()
                     databaseReference.removeEventListener(valueEventListener7 as ValueEventListener)
-                    databaseReference.removeEventListener(valueEventListener6 as ValueEventListener)
                 }
             }
 
@@ -220,7 +189,6 @@ class FirebaseMethods {
             override fun onConnectionTimeOut() {
                 addPostCallback.onConnectionTimeOut()
                 databaseReference.removeEventListener(valueEventListener7 as ValueEventListener)
-                databaseReference.removeEventListener(valueEventListener6 as ValueEventListener)
             }
         })
     }
