@@ -12,10 +12,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.chatappkotlin.Posts
 import com.example.chatappkotlin.R
-import com.example.chatappkotlin.User
 import com.example.chatappkotlin.UserSettings
 import com.example.chatappkotlin.util.DialogHelper
 import com.example.chatappkotlin.util.FirebaseMethods
+import com.example.chatappkotlin.util.customview.CircleImageView
 import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.firebase.ui.database.SnapshotParser
@@ -115,12 +115,16 @@ class HomeFragment : Fragment() {
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var img_backdrop: ImageView
+        var img_prof: CircleImageView
         var tv_title: TextView
+        var tv_nickname: TextView
 
 
         init {
             img_backdrop = itemView.findViewById<View>(R.id.image_post) as ImageView
+            img_prof = itemView.findViewById<View>(R.id.image_profile) as CircleImageView
             tv_title = itemView.findViewById<View>(R.id.tv_caption) as TextView
+            tv_nickname = itemView.findViewById<View>(R.id.tv_nickname) as TextView
         }
     }
 
@@ -148,11 +152,15 @@ class HomeFragment : Fragment() {
                                 snapshot1.child("str_caption").value.toString()
                             str_photo =
                                 snapshot1.child("str_photo").value.toString()
+                            nickname =
+                                snapshot1.child("str_nickname").value.toString()
+                            cropper_uri =
+                                snapshot1.child("str_profimage").value.toString()
 
 
                         }
 
-                        posts = Posts(userid, str_photo, str_caption)
+                        posts = Posts(userid, str_photo, str_caption, cropper_uri, nickname)
 
                         return posts!!
 
@@ -179,12 +187,18 @@ class HomeFragment : Fragment() {
 
 
                 holder.tv_title.text = posts.str_caption
+                holder.tv_nickname.text = posts.str_nickname
 
 
                 Glide.with(activity!!.applicationContext)
                     .load((posts.str_photo))
                     .error(R.drawable.ic_photo_camera_black_24dp)
-                    .into(holder.img_backdrop!!)
+                    .into(holder.img_backdrop)
+
+                Glide.with(activity!!.applicationContext)
+                    .load((posts.str_profimage))
+                    .error(R.drawable.ic_photo_camera_black_24dp)
+                    .into(holder.img_prof)
 
             }
 

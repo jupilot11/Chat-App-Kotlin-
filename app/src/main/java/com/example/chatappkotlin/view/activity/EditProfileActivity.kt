@@ -12,13 +12,13 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.bumptech.glide.Glide
 import com.example.chatappkotlin.*
+import com.example.chatappkotlin.R
 import com.example.chatappkotlin.util.Constants
 import com.example.chatappkotlin.util.DialogHelper
 import com.example.chatappkotlin.util.FirebaseMethods
 import com.example.chatappkotlin.view.fragment.ProfileFragment
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.karumi.dexter.Dexter
@@ -283,7 +283,11 @@ class EditProfileActivity : AppCompatActivity(), View.OnClickListener {
 
                 if (str_email.equals("") || str_display_name.equals("") || str_nickname.equals("")) {
 
-                    Toast.makeText(this@EditProfileActivity, "Please fill required fields.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this@EditProfileActivity,
+                        "Please fill required fields.",
+                        Toast.LENGTH_SHORT
+                    ).show()
 
                 } else {
 
@@ -463,7 +467,7 @@ class EditProfileActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun uploadImage(
         uriArrayList: ArrayList<Uri>,
-        userSettings: UserSettings,
+        userSettingss: UserSettings,
         user: User,
         profilePic: ProfilePic
     ) {
@@ -472,15 +476,15 @@ class EditProfileActivity : AppCompatActivity(), View.OnClickListener {
         if (uriArrayList.size == 0) {
 
             table_user!!.child("User Settings")
-                .child(userSettings.str_id!!)
-                .setValue(userSettings)
+                .child(userSettingss.str_id!!)
+                .setValue(userSettingss)
                 .addOnCompleteListener {
 
                     if (it.isSuccessful) {
 
                         firebaseMethods?.insertProfileImages(
                             table_user!!.child("User Settings"),
-                            userSettings,
+                            userSettingss,
                             user,
                             uriArrayList, profilePic,
                             object :
@@ -488,6 +492,41 @@ class EditProfileActivity : AppCompatActivity(), View.OnClickListener {
                                 override fun onSuccess(
                                     userSettings: UserSettings
                                 ) {
+
+
+                                    table_user!!.child("Posts")
+                                        .addListenerForSingleValueEvent(object :
+                                            ValueEventListener {
+                                            override fun onCancelled(p0: DatabaseError) {
+                                                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                                            }
+
+                                            override fun onDataChange(dataSnapshot: DataSnapshot) {
+
+
+                                                for (dataSnapshot1 in dataSnapshot.children) {
+
+                                                    var poste = dataSnapshot1.key.toString()
+
+                                                    for (dataSnaphot2 in dataSnapshot1.children) {
+
+                                                        var id_num = dataSnaphot2.key.toString()
+
+                                                        if (user.id.equals(id_num)) {
+
+
+                                                            table_user!!.child("Posts").child(poste)
+                                                                .child(id_num).child("str_nickname")
+                                                                .setValue(userSettingss.str_nickname)
+
+                                                        }
+                                                    }
+
+                                                }
+
+                                            }
+
+                                        })
 
 
                                     dialogHelper!!.dismissProgressDialog()
@@ -549,15 +588,15 @@ class EditProfileActivity : AppCompatActivity(), View.OnClickListener {
 
 
                             table_user!!.child("User Settings")
-                                .child(userSettings.str_id!!)
-                                .setValue(userSettings)
+                                .child(userSettingss.str_id!!)
+                                .setValue(userSettingss)
                                 .addOnCompleteListener {
 
                                     if (it.isSuccessful) {
 
                                         firebaseMethods?.insertProfileImages(
                                             table_user!!.child("User Settings"),
-                                            userSettings,
+                                            userSettingss,
                                             user,
                                             uriArrayList1!!, profilePic!!,
                                             object :
@@ -566,6 +605,45 @@ class EditProfileActivity : AppCompatActivity(), View.OnClickListener {
                                                     userSettings: UserSettings
                                                 ) {
 
+
+                                                    table_user!!.child("Posts")
+                                                        .addListenerForSingleValueEvent(object :
+                                                            ValueEventListener {
+                                                            override fun onCancelled(p0: DatabaseError) {
+                                                                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                                                            }
+
+                                                            override fun onDataChange(dataSnapshot: DataSnapshot) {
+
+
+                                                                for (dataSnapshot1 in dataSnapshot.children) {
+
+                                                                    var poste = dataSnapshot1.key.toString()
+
+                                                                    for (dataSnaphot2 in dataSnapshot1.children) {
+
+                                                                        var id_num = dataSnaphot2.key.toString()
+
+                                                                        if (user.id.equals(id_num)) {
+
+
+                                                                            table_user!!.child("Posts").child(poste)
+                                                                                .child(id_num).child("str_nickname")
+                                                                                .setValue(userSettingss.str_nickname)
+                                                                            table_user!!.child("Posts").child(poste)
+                                                                                .child(id_num).child("str_profimage")
+                                                                                .setValue(
+                                                                                    uriArrayList1!![1].toString())
+
+
+                                                                        }
+                                                                    }
+
+                                                                }
+
+                                                            }
+
+                                                        })
 
                                                     dialogHelper!!.dismissProgressDialog()
                                                     Toast.makeText(

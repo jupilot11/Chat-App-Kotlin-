@@ -6,15 +6,11 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.example.chatappkotlin.R
@@ -22,14 +18,8 @@ import com.example.chatappkotlin.UserSettings
 import com.example.chatappkotlin.util.Constants
 import com.example.chatappkotlin.util.RealtimeService
 import com.example.chatappkotlin.util.customview.CircleImageView
-import com.example.chatappkotlin.util.customview.CircleImageview
 import com.example.chatappkotlin.view.activity.EditProfileActivity
 import com.google.firebase.database.*
-import kotlinx.android.synthetic.main.fragment_profile.*
-import java.io.IOException
-import java.io.InputStream
-import java.net.HttpURLConnection
-import java.net.URL
 
 
 private const val ARG_PARAM1 = "param1"

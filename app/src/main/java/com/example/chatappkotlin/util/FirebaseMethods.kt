@@ -20,6 +20,7 @@ class FirebaseMethods {
     var valueEventListener4: ValueEventListener? = null
     var valueEventListener5: ValueEventListener? = null
 
+    var valueEventListener6: ValueEventListener? = null
     var valueEventListener7: ValueEventListener? = null
 
 
@@ -171,7 +172,6 @@ class FirebaseMethods {
                 if (it.isSuccessful) {
 
 
-
                     databaseReference.child("User Settings").child(posts.str_userid!!)
                         .addListenerForSingleValueEvent(valueEventListener7 as ValueEventListener)
 
@@ -193,26 +193,6 @@ class FirebaseMethods {
         })
     }
 
-
-    fun insertSingleImage(
-        storageReference: StorageReference,
-        uri: Uri,
-        insertToStorageCallback: InsertToStorageCallback
-    ) {
-        val ref = storageReference.child("images/" + UUID.randomUUID().toString())
-
-        ref.putFile(uri).addOnSuccessListener {
-            ref.downloadUrl.addOnSuccessListener { uri ->
-
-                insertToStorageCallback.onSuccess(uri)
-
-            }
-
-        }.addOnFailureListener {
-            insertToStorageCallback.onFailure()
-
-        }
-    }
 
     fun insertProfileImages(
         databaseReference: DatabaseReference,
@@ -350,6 +330,21 @@ class FirebaseMethods {
     ) {
 
 
+        valueEventListener6 = object : ValueEventListener {
+            override fun onCancelled(p0: DatabaseError) {
+            }
+
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+
+
+
+
+
+            }
+
+        }
+
+
         valueEventListener5 = object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {
 
@@ -364,9 +359,14 @@ class FirebaseMethods {
 
                             if (it.isSuccessful) {
 
+
                                 updateCallback.onSuccess(userSettings)
+
+                                databaseReference.child("Posts")
+                                    .addListenerForSingleValueEvent(valueEventListener6 as ValueEventListener)
                                 databaseReference.child("User")
                                     .removeEventListener(valueEventListener5 as ValueEventListener)
+
 
                             } else {
 
@@ -417,7 +417,6 @@ class FirebaseMethods {
                         if (username.equals(str_username, ignoreCase = true)) {
 
                             isEqual = true
-
 
                             var email = dataSnapshot1.child("str_email").value.toString()
                             var userid = dataSnapshot1.child("str_userId").value.toString()
