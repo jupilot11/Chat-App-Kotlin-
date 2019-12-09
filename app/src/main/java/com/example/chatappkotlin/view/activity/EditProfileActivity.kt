@@ -618,22 +618,31 @@ class EditProfileActivity : AppCompatActivity(), View.OnClickListener {
 
                                                                 for (dataSnapshot1 in dataSnapshot.children) {
 
-                                                                    var poste = dataSnapshot1.key.toString()
+                                                                    var poste =
+                                                                        dataSnapshot1.key.toString()
 
                                                                     for (dataSnaphot2 in dataSnapshot1.children) {
 
-                                                                        var id_num = dataSnaphot2.key.toString()
+                                                                        var id_num =
+                                                                            dataSnaphot2.key.toString()
 
                                                                         if (user.id.equals(id_num)) {
 
 
-                                                                            table_user!!.child("Posts").child(poste)
-                                                                                .child(id_num).child("str_nickname")
-                                                                                .setValue(userSettingss.str_nickname)
-                                                                            table_user!!.child("Posts").child(poste)
-                                                                                .child(id_num).child("str_profimage")
+                                                                            table_user!!.child("Posts")
+                                                                                .child(poste)
+                                                                                .child(id_num)
+                                                                                .child("str_nickname")
                                                                                 .setValue(
-                                                                                    uriArrayList1!![1].toString())
+                                                                                    userSettingss.str_nickname
+                                                                                )
+                                                                            table_user!!.child("Posts")
+                                                                                .child(poste)
+                                                                                .child(id_num)
+                                                                                .child("str_profimage")
+                                                                                .setValue(
+                                                                                    uriArrayList1!![1].toString()
+                                                                                )
 
 
                                                                         }
@@ -646,12 +655,15 @@ class EditProfileActivity : AppCompatActivity(), View.OnClickListener {
                                                         })
 
                                                     dialogHelper!!.dismissProgressDialog()
-                                                    Toast.makeText(
-                                                        this@EditProfileActivity,
-                                                        "SUCCESS",
-                                                        Toast.LENGTH_SHORT
-                                                    ).show()
 
+                                                    var intent = Intent()
+
+                                                    intent.putExtra(
+                                                        Constants.INTENT_USER,
+                                                        userSettings
+                                                    )
+                                                    setResult(Activity.RESULT_OK, intent)
+                                                    finish()
 
                                                 }
 

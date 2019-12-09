@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
+import com.example.chatappkotlin.Posts
 import com.example.chatappkotlin.R
 import com.example.chatappkotlin.UserSettings
 import com.example.chatappkotlin.util.Constants
@@ -35,7 +36,7 @@ class ProfileFragment : Fragment() {
     private var realtimeReceiver: RealtimeReceiver? = null
     private var database: FirebaseDatabase? = null
     private var table_user: DatabaseReference? = null
-
+    private var arrayListPost : ArrayList<Posts>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,7 +55,7 @@ class ProfileFragment : Fragment() {
 
 
         database = FirebaseDatabase.getInstance()
-        table_user = database!!.reference.child("User Settings")
+        table_user = database!!.reference
 
         imageView = view.findViewById(R.id.circleImageview)
         followers = view.findViewById(R.id.tv_followers)
@@ -107,6 +108,8 @@ class ProfileFragment : Fragment() {
         registerReceiver()
         getRealtime(userSettings!!)
 
+
+        loadPosts()
 
     }
 
@@ -238,5 +241,46 @@ class ProfileFragment : Fragment() {
                 getRealtime(settings)
             }
         }
+    }
+
+
+    private fun loadPosts(){
+
+        table_user!!.child("Posts").addValueEventListener(object : ValueEventListener{
+            override fun onCancelled(p0: DatabaseError) {
+                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
+
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+
+                arrayListPost = ArrayList()
+
+                for (datasnapshot1 in dataSnapshot.children){
+
+
+                    for (datasnaphot2 in datasnapshot1.children){
+
+
+                        var user_key = datasnaphot2.key.toString()
+
+                        if (userSettings!!.str_id!! == user_key){
+
+
+                            var caption = datasnaphot2.child("str_caption").value.toString()
+                            var nickname = datasnaphot2.child("str_nickname").value.toString()
+                            var photo_post= datasnaphot2.child("str_photo").value.toString()
+                            var prof_image = datasnaphot2.child("str_profimage").value.toString()
+                            var userid = datasnaphot2.child("str_userid").value.toString()
+
+
+                            var post = Posts(userid, photo_post, caption, prof_image, nickname)
+
+                            arrayListPost!!.add(post)
+                        }
+                    }
+                }
+
+            }
+        })
     }
 }
