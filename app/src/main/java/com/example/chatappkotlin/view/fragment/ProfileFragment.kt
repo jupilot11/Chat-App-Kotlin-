@@ -12,15 +12,20 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.chatappkotlin.Posts
 import com.example.chatappkotlin.R
 import com.example.chatappkotlin.UserSettings
 import com.example.chatappkotlin.util.Constants
 import com.example.chatappkotlin.util.RealtimeService
+import com.example.chatappkotlin.util.adapter.UserPostsAdapter
 import com.example.chatappkotlin.util.customview.CircleImageView
 import com.example.chatappkotlin.view.activity.EditProfileActivity
 import com.google.firebase.database.*
+import kotlinx.android.synthetic.main.fragment_profile.*
 
 
 private const val ARG_PARAM1 = "param1"
@@ -36,7 +41,7 @@ class ProfileFragment : Fragment() {
     private var realtimeReceiver: RealtimeReceiver? = null
     private var database: FirebaseDatabase? = null
     private var table_user: DatabaseReference? = null
-    private var arrayListPost : ArrayList<Posts>? = null
+    private var arrayListPost: ArrayList<Posts>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,7 +69,7 @@ class ProfileFragment : Fragment() {
         nickname = view.findViewById(R.id.tv_nickname)
         bio = view.findViewById(R.id.tv_bio)
         edit_profile = view.findViewById(R.id.tv_edit_profile)
-
+        recyclerView = view.findViewById(R.id.post_recyclerView)
 
         edit_profile!!.setOnClickListener {
 
@@ -108,8 +113,14 @@ class ProfileFragment : Fragment() {
         registerReceiver()
         getRealtime(userSettings!!)
 
+        recyclerView!!.layoutManager = GridLayoutManager(activity, 3)
 
         loadPosts()
+
+
+//        post_recyclerView.layoutManager = LinearLayoutManager(activity)
+
+
 
     }
 
@@ -154,7 +165,7 @@ class ProfileFragment : Fragment() {
         var bio: TextView? = null
         var userSettings: UserSettings? = null
         var edit_profile: TextView? = null
-
+        var recyclerView : RecyclerView? = null
 
         var type: Int? = null
 
@@ -236,7 +247,7 @@ class ProfileFragment : Fragment() {
             if (resultCode == Activity.RESULT_OK) {
 
 
-                var settings : UserSettings = data!!.getParcelableExtra(Constants.INTENT_USER)
+                var settings: UserSettings = data!!.getParcelableExtra(Constants.INTENT_USER)
 
                 getRealtime(settings)
             }
@@ -244,9 +255,9 @@ class ProfileFragment : Fragment() {
     }
 
 
-    private fun loadPosts(){
+    private fun loadPosts() {
 
-        table_user!!.child("Posts").addValueEventListener(object : ValueEventListener{
+        table_user!!.child("Posts").addValueEventListener(object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {
                 TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
             }
@@ -255,20 +266,20 @@ class ProfileFragment : Fragment() {
 
                 arrayListPost = ArrayList()
 
-                for (datasnapshot1 in dataSnapshot.children){
+                for (datasnapshot1 in dataSnapshot.children) {
 
 
-                    for (datasnaphot2 in datasnapshot1.children){
+                    for (datasnaphot2 in datasnapshot1.children) {
 
 
                         var user_key = datasnaphot2.key.toString()
 
-                        if (userSettings!!.str_id!! == user_key){
+                        if (userSettings!!.str_id!! == user_key) {
 
 
                             var caption = datasnaphot2.child("str_caption").value.toString()
                             var nickname = datasnaphot2.child("str_nickname").value.toString()
-                            var photo_post= datasnaphot2.child("str_photo").value.toString()
+                            var photo_post = datasnaphot2.child("str_photo").value.toString()
                             var prof_image = datasnaphot2.child("str_profimage").value.toString()
                             var userid = datasnaphot2.child("str_userid").value.toString()
 
@@ -279,8 +290,12 @@ class ProfileFragment : Fragment() {
                         }
                     }
                 }
+                recyclerView!!.adapter = UserPostsAdapter(arrayListPost!!, activity!!)
 
             }
         })
+
+
+
     }
 }
