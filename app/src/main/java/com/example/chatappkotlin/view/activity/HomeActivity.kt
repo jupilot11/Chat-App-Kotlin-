@@ -23,6 +23,7 @@ import com.example.chatappkotlin.util.Constants.Companion.INTENT_TYPE
 import com.example.chatappkotlin.util.Constants.Companion.INTENT_USER
 import com.example.chatappkotlin.util.RealtimeService
 import com.example.chatappkotlin.view.fragment.HomeFragment
+import com.example.chatappkotlin.view.fragment.HomeFragment.Companion.recyclerView
 import com.example.chatappkotlin.view.fragment.NotifactionFragment
 import com.example.chatappkotlin.view.fragment.ProfileFragment
 import com.example.chatappkotlin.view.fragment.SearchFragment
@@ -100,7 +101,6 @@ class HomeActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener {
         when (tab?.position) {
 
             0 -> {
-
 
             }
             1 -> {

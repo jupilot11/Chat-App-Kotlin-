@@ -118,7 +118,6 @@ class ProfileFragment : Fragment() {
         loadPosts()
 
 
-//        post_recyclerView.layoutManager = LinearLayoutManager(activity)
 
 
 
@@ -256,6 +255,9 @@ class ProfileFragment : Fragment() {
 
 
     private fun loadPosts() {
+
+        arrayListPost = ArrayList()
+        recyclerView!!.adapter = UserPostsAdapter(arrayListPost!!, activity!!)
 
         table_user!!.child("Posts").addValueEventListener(object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {
