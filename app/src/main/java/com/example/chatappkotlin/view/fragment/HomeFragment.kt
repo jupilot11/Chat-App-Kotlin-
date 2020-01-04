@@ -87,8 +87,8 @@ class HomeFragment : Fragment() {
 
 
         linearLayoutManager = LinearLayoutManager(activity)
-        linearLayoutManager!!.reverseLayout = true
-        linearLayoutManager!!.stackFromEnd = true
+//        linearLayoutManager!!.reverseLayout = true
+//        linearLayoutManager!!.stackFromEnd = true
 
         recyclerView!!.layoutManager = linearLayoutManager
 

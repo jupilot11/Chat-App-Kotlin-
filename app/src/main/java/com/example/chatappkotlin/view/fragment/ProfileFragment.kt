@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
@@ -24,6 +25,9 @@ import com.example.chatappkotlin.util.RealtimeService
 import com.example.chatappkotlin.util.adapter.UserPostsAdapter
 import com.example.chatappkotlin.util.customview.CircleImageView
 import com.example.chatappkotlin.view.activity.EditProfileActivity
+import com.firebase.ui.database.FirebaseRecyclerAdapter
+import com.firebase.ui.database.FirebaseRecyclerOptions
+import com.firebase.ui.database.SnapshotParser
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.fragment_profile.*
 
@@ -42,6 +46,11 @@ class ProfileFragment : Fragment() {
     private var database: FirebaseDatabase? = null
     private var table_user: DatabaseReference? = null
     private var arrayListPost: ArrayList<Posts>? = null
+
+    private var linearLayoutManager: LinearLayoutManager? = null
+    private var posts_object: Posts? = null
+    private var firebaseadapter: FirebaseRecyclerAdapter<*, *>? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -115,12 +124,110 @@ class ProfileFragment : Fragment() {
 
         recyclerView!!.layoutManager = GridLayoutManager(activity, 3)
 
-        loadPosts()
+//        loadPosts()
+
+
+        showList()
 
 
 
 
+    }
 
+
+
+    private fun showList() {
+        var postses: Posts
+
+        var nickname = ""
+        var cropper_uri = ""
+        var userid = ""
+        var str_caption = ""
+        var str_photo = ""
+
+        val query: Query = table_user!!.child("Posts")
+        val optionss: FirebaseRecyclerOptions<Posts> = FirebaseRecyclerOptions.Builder<Posts>()
+            .setQuery(query, object : SnapshotParser<Posts> {
+                override fun parseSnapshot(snapshot: DataSnapshot): Posts {
+
+                    if (snapshot.childrenCount != 0L) {
+
+
+
+                        for (snapshot1 in snapshot.children) {
+
+                            userid =
+                                snapshot1.child("str_userid").value.toString()
+                            str_caption =
+                                snapshot1.child("str_caption").value.toString()
+                            str_photo =
+                                snapshot1.child("str_photo").value.toString()
+                            nickname =
+                                snapshot1.child("str_nickname").value.toString()
+                            cropper_uri =
+                                snapshot1.child("str_profimage").value.toString()
+
+
+                        }
+
+
+
+                        posts_object = Posts(userid, str_photo, str_caption, cropper_uri, nickname)
+
+                        return posts_object!!
+
+                    } else {
+
+                        posts = null
+                        return posts!!
+
+                    }
+                }
+
+            }).build()
+
+        firebaseadapter = object : FirebaseRecyclerAdapter<Posts, ViewHolder>(optionss) {
+            override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+
+                val view: View = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.home_list, parent, false)
+
+                return ViewHolder(view)
+            }
+
+            override fun onBindViewHolder(holder: ViewHolder, pos: Int, posts: Posts) {
+
+
+                Glide.with(activity!!.applicationContext)
+                    .load((posts.str_photo))
+                    .error(R.drawable.ic_photo_camera_black_24dp)
+                    .into(holder.img_backdrop)
+
+
+
+            }
+
+            override fun getItem(position: Int): Posts {
+                return super.getItem(position)
+            }
+        }
+
+
+        recyclerView!!.adapter = firebaseadapter
+
+
+    }
+
+
+    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        var img_backdrop: ImageView
+
+
+
+        init {
+            img_backdrop = itemView.findViewById<View>(R.id.img_backdrop) as ImageView
+
+        }
     }
 
 
@@ -143,6 +250,18 @@ class ProfileFragment : Fragment() {
         super.onResume()
         registerReceiver()
     }
+
+    override fun onStart() {
+        super.onStart()
+        firebaseadapter!!.startListening()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        firebaseadapter!!.stopListening()
+    }
+
+
 
     fun getRealtime(userSettings: UserSettings) {
 
@@ -259,7 +378,7 @@ class ProfileFragment : Fragment() {
         arrayListPost = ArrayList()
         recyclerView!!.adapter = UserPostsAdapter(arrayListPost!!, activity!!)
 
-        table_user!!.child("Posts").addValueEventListener(object : ValueEventListener {
+        table_user!!.child("Posts").addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {
                 TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
             }
@@ -300,4 +419,6 @@ class ProfileFragment : Fragment() {
 
 
     }
+
+
 }
